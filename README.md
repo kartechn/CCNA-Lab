@@ -17,6 +17,8 @@ The goal is to practise **creating VLANs, assigning access ports and checking se
 
 ## Topology
 
+![Topology: SW1 with PC2 on VLAN 10 and PC1 on VLAN 20](images/topology.svg)
+
 ```text
                  SW1 (WS-C2960-24TT-L)
                Gi0/1               Gi0/2
@@ -160,6 +162,7 @@ show running-config
 | File | Description |
 |---|---|
 | [`lab-files/simple-switch-vlan-lab.json`](lab-files/simple-switch-vlan-lab.json) | PingMyNetwork Sandbox export. Import it into the Sandbox to load the full topology. |
+| [`images/topology.svg`](images/topology.svg) | Topology diagram |
 | [`configs/SW1-running-config.txt`](configs/SW1-running-config.txt) | SW1 saved configuration, taken from the export |
 
 **Built with:** [PingMyNetwork Sandbox](https://pingmynetwork.com/sandbox)
