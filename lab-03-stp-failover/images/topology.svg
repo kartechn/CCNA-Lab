@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="560" viewBox="0 0 760 560" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="560" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">Spanning Tree Protocol (STP) and Failover</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">Expected Rapid-PVST+ roles for VLANs 10 and 20</text>
+
+  <!-- trunks -->
+  <line x1="260" y1="130" x2="500" y2="130" stroke="#8250df" stroke-width="4"/>
+  <line x1="200" y1="152" x2="200" y2="288" stroke="#8250df" stroke-width="4"/>
+  <line x1="560" y1="152" x2="560" y2="288" stroke="#8250df" stroke-width="4"/>
+  <text x="380" y="122" text-anchor="middle" font-size="12" fill="#8250df">Gi0/1 ↔ Gi0/1 (trunk)</text>
+  <text x="192" y="215" text-anchor="end" font-size="12" fill="#8250df">SW1 Gi0/2</text>
+  <text x="192" y="231" text-anchor="end" font-size="12" fill="#8250df">↕ SW3 Gi0/1</text>
+  <text x="568" y="215" font-size="12" fill="#8250df">SW2 Gi0/2</text>
+  <text x="568" y="231" font-size="12" fill="#8250df">↕ SW4 Gi0/1</text>
+
+  <!-- EtherChannel Po1 -->
+  <line x1="260" y1="304" x2="500" y2="304" stroke="#bc4c00" stroke-width="3"/>
+  <line x1="260" y1="316" x2="500" y2="316" stroke="#bc4c00" stroke-width="3"/>
+  <ellipse cx="300" cy="310" rx="9" ry="16" fill="none" stroke="#bc4c00" stroke-width="2"/>
+  <ellipse cx="460" cy="310" rx="9" ry="16" fill="none" stroke="#bc4c00" stroke-width="2"/>
+  <text x="380" y="296" text-anchor="middle" font-size="12" font-weight="bold" fill="#bc4c00">Po1 · LACP EtherChannel</text>
+  <text x="380" y="336" text-anchor="middle" font-size="12" fill="#bc4c00">Fa0/3 + Fa0/4 ↔ Fa0/3 + Fa0/4</text>
+
+  <!-- blocked port marker at SW4 end -->
+  <circle cx="486" cy="310" r="11" fill="#cf222e"/>
+  <path d="M480 304 l12 12 M492 304 l-12 12" stroke="#ffffff" stroke-width="2.5"/>
+  <text x="486" y="355" text-anchor="middle" font-size="11" font-weight="bold" fill="#cf222e">SW4 Po1 Alternate (discarding)</text>
+
+  <!-- root port labels -->
+  <text x="490" y="146" text-anchor="end" font-size="11" font-weight="bold" fill="#1a7f37">RP</text>
+  <text x="208" y="282" font-size="11" font-weight="bold" fill="#1a7f37">RP</text>
+  <text x="552" y="282" text-anchor="end" font-size="11" font-weight="bold" fill="#1a7f37">RP</text>
+
+  <!-- switches -->
+  <g font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    <rect x="140" y="108" width="120" height="44" rx="6" fill="#1a7f37"/><text x="200" y="136">SW1</text>
+    <rect x="500" y="108" width="120" height="44" rx="6" fill="#0969da"/><text x="560" y="136">SW2</text>
+    <rect x="140" y="288" width="120" height="44" rx="6" fill="#57606a"/><text x="200" y="316">SW3</text>
+    <rect x="500" y="288" width="120" height="44" rx="6" fill="#57606a"/><text x="560" y="316">SW4</text>
+  </g>
+  <text x="200" y="84" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a7f37">Root bridge · priority 24576</text>
+  <text x="200" y="99" text-anchor="middle" font-size="11" fill="#57606a">WS-C2960-24TT-L</text>
+  <text x="560" y="84" text-anchor="middle" font-size="12" font-weight="bold" fill="#0969da">Backup root · priority 28672</text>
+  <text x="560" y="99" text-anchor="middle" font-size="11" fill="#57606a">WS-C2960-24TT-L</text>
+
+  <!-- PC links -->
+  <g stroke="#57606a" stroke-width="2">
+    <line x1="175" y1="332" x2="110" y2="420"/><line x1="225" y1="332" x2="290" y2="420"/>
+    <line x1="535" y1="332" x2="470" y2="420"/><line x1="585" y1="332" x2="650" y2="420"/>
+  </g>
+  <g font-size="11" fill="#57606a">
+    <text x="128" y="380" text-anchor="end">Fa0/1</text><text x="272" y="380">Fa0/2</text>
+    <text x="488" y="380" text-anchor="end">Fa0/1</text><text x="632" y="380">Fa0/2</text>
+  </g>
+
+  <!-- PCs -->
+  <g fill="#f6f8fa" stroke="#57606a" stroke-width="2">
+    <rect x="80" y="420" width="60" height="40" rx="4"/><rect x="260" y="420" width="60" height="40" rx="4"/>
+    <rect x="440" y="420" width="60" height="40" rx="4"/><rect x="620" y="420" width="60" height="40" rx="4"/>
+  </g>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328">
+    <text x="110" y="445">PC1</text><text x="290" y="445">PC2</text><text x="470" y="445">PC3</text><text x="650" y="445">PC4</text>
+  </g>
+  <g text-anchor="middle" font-size="11" fill="#1f2328">
+    <text x="110" y="478">192.168.10.11</text><text x="290" y="478">192.168.10.12</text>
+    <text x="470" y="478">192.168.20.11</text><text x="650" y="478">192.168.20.12</text>
+  </g>
+  <g text-anchor="middle" font-size="11" fill="#57606a">
+    <text x="110" y="493">VLAN 1</text><text x="290" y="493">VLAN 1</text><text x="470" y="493">VLAN 1</text><text x="650" y="493">VLAN 1</text>
+  </g>
+
+  <text x="380" y="535" text-anchor="middle" font-size="11" fill="#57606a">RP = root port · host ports are unconfigured, so the PCs sit in VLAN 1 (root chosen by MAC address)</text>
+</svg>
