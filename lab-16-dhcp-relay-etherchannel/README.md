@@ -272,7 +272,7 @@ DSW1(config-if)#ip helper-address 10.0.0.1
 ! Enable the interface
 DSW1(config-if)#no shutdown
 DSW1(config-if)#exit
-! Static route to 0.0.0.0/0.0.0.0 via 10.0.0.1
+! Default route: send everything unknown to 10.0.0.1
 DSW1(config)#ip route 0.0.0.0 0.0.0.0 10.0.0.1
 DSW1(config)#end
 ! Save the running config to NVRAM

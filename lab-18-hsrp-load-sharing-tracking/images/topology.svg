@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="620" viewBox="0 0 760 620" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="620" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">HSRP Load Sharing and Uplink Tracking</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">VLAN 10 Active on DSW1 · VLAN 20 Active on DSW2 · each tracks its uplink (decrement 20)</text>
+
+  <!-- R1 ISP -->
+  <rect x="320" y="74" width="120" height="46" rx="23" fill="#8250df"/>
+  <text x="380" y="103" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">R1 (ISP)</text>
+  <text x="456" y="92" font-size="11" font-weight="bold" fill="#1f2328">Loopback0 8.8.8.8/32</text>
+  <text x="456" y="106" font-size="11" fill="#57606a">ISR4331 · static routes to both cores</text>
+
+  <!-- uplinks -->
+  <line x1="330" y1="114" x2="210" y2="186" stroke="#1f2328" stroke-width="4"/>
+  <line x1="430" y1="114" x2="550" y2="186" stroke="#1f2328" stroke-width="4"/>
+  <circle cx="270" cy="150" r="11" fill="#cf222e"/><path d="M265 145 l10 10 M275 145 l-10 10" stroke="#fff" stroke-width="2"/>
+  <g font-size="11">
+    <text x="252" y="128" text-anchor="end" font-weight="bold" fill="#1f2328">10.1.1.0/30</text>
+    <text x="252" y="142" text-anchor="end" fill="#57606a">R1 Gi0/0 ↔ DSW1 Gi0/1 (routed)</text>
+    <text x="252" y="170" text-anchor="end" fill="#cf222e">test: shutdown R1 Gi0/0</text>
+    <text x="508" y="128" font-weight="bold" fill="#1f2328">10.2.2.0/30</text>
+    <text x="508" y="142" fill="#57606a">R1 Gi0/1 ↔ DSW2 Gi0/1 (routed)</text>
+  </g>
+
+  <!-- cores -->
+  <rect x="140" y="186" width="120" height="50" rx="6" fill="#1a7f37"/>
+  <text x="200" y="217" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">DSW1</text>
+  <rect x="500" y="186" width="120" height="50" rx="6" fill="#0969da"/>
+  <text x="560" y="217" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">DSW2</text>
+  <line x1="260" y1="211" x2="500" y2="211" stroke="#8250df" stroke-width="4"/>
+  <text x="380" y="204" text-anchor="middle" font-size="11" fill="#8250df">Fa0/2 ↔ Fa0/2 · trunk</text>
+
+  <g font-size="11">
+    <text x="200" y="256" text-anchor="middle" font-weight="bold" fill="#1a7f37">VLAN 10 Active · 110 · STP root</text>
+    <text x="200" y="270" text-anchor="middle" fill="#57606a">VLAN 20 Standby · 100</text>
+    <text x="200" y="284" text-anchor="middle" fill="#57606a">track 1 = Gi0/1 → VLAN 10 −20</text>
+    <text x="200" y="298" text-anchor="middle" fill="#57606a">default route → 10.1.1.1</text>
+    <text x="560" y="256" text-anchor="middle" font-weight="bold" fill="#0969da">VLAN 20 Active · 110 · STP root</text>
+    <text x="560" y="270" text-anchor="middle" fill="#57606a">VLAN 10 Standby · 100</text>
+    <text x="560" y="284" text-anchor="middle" fill="#57606a">track 1 = Gi0/1 → VLAN 20 −20</text>
+    <text x="560" y="298" text-anchor="middle" fill="#57606a">default route → 10.2.2.1</text>
+  </g>
+
+  <!-- downlinks -->
+  <line x1="200" y1="306" x2="345" y2="378" stroke="#8250df" stroke-width="4"/>
+  <line x1="560" y1="306" x2="415" y2="378" stroke="#8250df" stroke-width="4"/>
+  <text x="262" y="356" text-anchor="end" font-size="11" fill="#8250df">DSW1 Fa0/1 ↔ SW1 Fa0/1</text>
+  <text x="498" y="356" font-size="11" fill="#8250df">DSW2 Fa0/1 ↔ SW1 Fa0/2</text>
+
+  <rect x="320" y="378" width="120" height="44" rx="6" fill="#57606a"/>
+  <text x="380" y="406" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">SW1</text>
+
+  <!-- hosts -->
+  <g stroke="#57606a" stroke-width="2"><line x1="345" y1="422" x2="240" y2="470"/><line x1="415" y1="422" x2="520" y2="470"/></g>
+  <rect x="210" y="470" width="60" height="38" rx="4" fill="#f6f8fa" stroke="#57606a" stroke-width="2"/>
+  <rect x="486" y="466" width="68" height="46" rx="4" fill="#f6f8fa" stroke="#57606a" stroke-width="2"/>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328"><text x="240" y="494">PC1</text><text x="520" y="494">SRV1</text></g>
+  <g text-anchor="middle" font-size="11" fill="#1f2328"><text x="240" y="526">VLAN 10 · 192.168.10.10</text><text x="520" y="530">VLAN 20 · 192.168.20.100</text></g>
+  <g text-anchor="middle" font-size="11" fill="#57606a"><text x="240" y="540">gw 192.168.10.1</text><text x="520" y="544">gw 192.168.20.1</text></g>
+
+  <!-- result -->
+  <rect x="60" y="560" width="640" height="46" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="380" y="579" text-anchor="middle" font-size="11" font-weight="bold" fill="#1f2328">Observed: R1 Gi0/0 shut → DSW1 track Down, VLAN 10 priority 110 → 90 → DSW2 Active within ~1 s</text>
+  <text x="380" y="595" text-anchor="middle" font-size="11" fill="#57606a">no shut → track Up → DSW1 preempts VLAN 10 back ~3 s later · PC1 → 8.8.8.8 ping 4/4 (×3), TTL 254</text>
+</svg>
