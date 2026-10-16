@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="560" viewBox="0 0 760 560" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="560" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">The Golden Rule: Configure the Po, Not the Members</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">Po1 · 3-link LACP trunk · SW1 active ↔ SW2 passive · VLAN 10</text>
+
+  <!-- links -->
+  <line x1="260" y1="102" x2="500" y2="102" stroke="#8250df" stroke-width="3"/>
+  <line x1="260" y1="122" x2="500" y2="122" stroke="#8250df" stroke-width="3"/>
+  <line x1="260" y1="142" x2="500" y2="142" stroke="#cf222e" stroke-width="3" stroke-dasharray="8 5"/>
+  <ellipse cx="300" cy="120" rx="10" ry="26" fill="none" stroke="#8250df" stroke-width="2"/>
+  <ellipse cx="460" cy="120" rx="10" ry="26" fill="none" stroke="#8250df" stroke-width="2"/>
+  <g font-size="10" fill="#57606a">
+    <text x="320" y="97">Fa0/1 (P)</text><text x="320" y="117">Fa0/2 (P)</text>
+  </g>
+  <text x="320" y="137" font-size="10" font-weight="bold" fill="#cf222e">Fa0/3 (s) when misconfigured</text>
+
+  <!-- switches -->
+  <g font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    <rect x="140" y="92" width="120" height="56" rx="6" fill="#57606a"/><text x="200" y="126">SW1</text>
+    <rect x="500" y="92" width="120" height="56" rx="6" fill="#57606a"/><text x="560" y="126">SW2</text>
+  </g>
+  <g stroke="#57606a" stroke-width="2"><line x1="200" y1="148" x2="200" y2="180"/><line x1="560" y1="148" x2="560" y2="180"/></g>
+  <g fill="#f6f8fa" stroke="#57606a" stroke-width="2"><rect x="80" y="166" width="60" height="30" rx="4"/><rect x="620" y="166" width="60" height="30" rx="4"/></g>
+  <g stroke="#57606a" stroke-width="2"><line x1="200" y1="180" x2="140" y2="180"/><line x1="560" y1="180" x2="620" y2="180"/></g>
+  <g text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2328"><text x="110" y="186">PC1</text><text x="650" y="186">PC2</text></g>
+  <g text-anchor="middle" font-size="10" fill="#57606a"><text x="110" y="210">.10.1 · Fa0/10</text><text x="650" y="210">.10.2 · Fa0/10</text></g>
+
+  <!-- WRONG box -->
+  <rect x="30" y="232" width="340" height="300" rx="8" fill="#fff8f8" stroke="#ffcecb"/>
+  <text x="200" y="256" text-anchor="middle" font-size="14" font-weight="bold" fill="#cf222e">WRONG: change one member</text>
+  <g font-family="monospace" font-size="11" fill="#1f2328">
+    <text x="46" y="284">SW1(config)#interface f0/3</text>
+    <text x="46" y="300">SW1(config-if)#switchport trunk</text>
+    <text x="46" y="314">               allowed vlan 1,20</text>
+  </g>
+  <g font-family="monospace" font-size="10" fill="#cf222e">
+    <text x="46" y="342">%EC-5-CANNOT_BUNDLE2: Fa0/3 is not</text>
+    <text x="46" y="356">compatible with Po1 and will be</text>
+    <text x="46" y="370">suspended (vlan mask of Fa0/3 is</text>
+    <text x="46" y="384">different than that of Po1)</text>
+  </g>
+  <g font-family="monospace" font-size="11" fill="#1f2328">
+    <text x="46" y="414">Po1(SU)  Fa0/1(P) Fa0/2(P) Fa0/3(s)</text>
+  </g>
+  <g font-size="11" fill="#1f2328">
+    <text x="46" y="444">Bundle still looks "up" (SU), but one</text>
+    <text x="46" y="460">member is suspended.</text>
+    <text x="46" y="478" font-weight="bold" fill="#cf222e">1/3 of the bandwidth silently lost,</text>
+    <text x="46" y="494" font-weight="bold" fill="#cf222e">and one less link of redundancy.</text>
+  </g>
+  <text x="200" y="520" text-anchor="middle" font-size="10" fill="#57606a">observed on SW1</text>
+
+  <!-- RIGHT box -->
+  <rect x="390" y="232" width="340" height="300" rx="8" fill="#f6fff8" stroke="#aceebb"/>
+  <text x="560" y="256" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a7f37">RIGHT: change the Port-channel</text>
+  <g font-family="monospace" font-size="11" fill="#1f2328">
+    <text x="406" y="284">SW1(config)#interface f0/3</text>
+    <text x="406" y="300">SW1(config-if)#no switchport trunk</text>
+    <text x="406" y="314">               allowed vlan</text>
+    <text x="406" y="336">SW1(config)#interface port-channel 1</text>
+    <text x="406" y="352">SW1(config-if)#switchport trunk</text>
+    <text x="406" y="366">               allowed vlan 1,10</text>
+  </g>
+  <g font-family="monospace" font-size="11" fill="#1f2328">
+    <text x="406" y="396">Po1(SU)  Fa0/1(P) Fa0/2(P) Fa0/3(P)</text>
+    <text x="406" y="424">SW1#show run int f0/3</text>
+    <text x="406" y="440">interface FastEthernet0/3</text>
+    <text x="406" y="454" font-weight="bold" fill="#1a7f37"> switchport trunk allowed vlan 1,10</text>
+    <text x="406" y="468"> switchport mode trunk</text>
+    <text x="406" y="482"> channel-group 1 mode active</text>
+  </g>
+  <text x="560" y="506" text-anchor="middle" font-size="11" fill="#1f2328">Members inherit the Po setting automatically</text>
+  <text x="560" y="520" text-anchor="middle" font-size="10" fill="#57606a">observed on SW1</text>
+</svg>
