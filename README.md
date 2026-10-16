@@ -13,8 +13,9 @@ Hands-on Cisco networking labs built in the **PingMyNetwork Sandbox**, following
 | 05 | [Layer 3 EtherChannel](lab-05-l3-etherchannel/) | Routed LACP port-channel, lacp rate fast, max-bundle, static routing | 2 × 3560, 2 PCs |
 | 06 | [EtherChannel and Inter-VLAN Routing](lab-06-etherchannel-inter-vlan/) | LACP trunk bundles, active/passive, SVIs, inter-VLAN routing | 1 × 3560, 2 × 2960, 2 PCs |
 | 07 | [EtherChannel Troubleshooting](lab-07-etherchannel-troubleshooting/) | LACP mode mismatch, member inconsistency, wrong access VLAN, fault isolation | 2 × 2960, 2 PCs |
+| 08 | [STP over EtherChannel](lab-08-etherchannel-stp/) | LACP trunk triangle, root primary/secondary, port-channel cost, bundle failover | 2 × 3560, 1 × 2960, 2 PCs |
 
-The labs build on each other. Lab 01 shows that VLANs isolate hosts at Layer 2. Lab 02 adds a Layer 3 switch so the VLANs *can* talk, then uses ACLs to decide that they *shouldn't*. Lab 03 adds redundant links between switches and shows how spanning tree keeps them loop-free and fails over. Lab 04 bundles parallel links with all three EtherChannel modes and compares how they negotiate. Lab 05 makes the bundle routed, tunes LACP and connects two subnets with static routes. Lab 06 combines both: LACP trunk bundles to a Layer 3 core that routes between VLANs. Lab 07 breaks an EtherChannel on purpose and walks through finding and fixing each fault.
+The labs build on each other. Lab 01 shows that VLANs isolate hosts at Layer 2. Lab 02 adds a Layer 3 switch so the VLANs *can* talk, then uses ACLs to decide that they *shouldn't*. Lab 03 adds redundant links between switches and shows how spanning tree keeps them loop-free and fails over. Lab 04 bundles parallel links with all three EtherChannel modes and compares how they negotiate. Lab 05 makes the bundle routed, tunes LACP and connects two subnets with static routes. Lab 06 combines both: LACP trunk bundles to a Layer 3 core that routes between VLANs. Lab 07 breaks an EtherChannel on purpose and walks through finding and fixing each fault. Lab 08 runs spanning tree over a triangle of EtherChannels and fails over between bundles.
 
 ## Repository layout
 
