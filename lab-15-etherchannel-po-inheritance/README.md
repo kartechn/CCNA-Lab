@@ -62,7 +62,7 @@ SW1#show etherchannel summary | begin Group
 1      Po1(SU)         LACP      Fa0/1(P)    Fa0/2(P)    Fa0/3(s)
 ```
 
-**This is the silent failure.** Po1 is `SU`, trunking works and pings succeed, but Fa0/3 is suspended. The bundle runs on two of its three links: a third of the bandwidth is gone and there's one less link of redundancy. A quick look at interface status or ping results wouldn't reveal it.
+**This is the silent failure.** Po1 is `SU` and traffic can still flow over Fa0/1-2, but Fa0/3 is suspended. The bundle runs on two of its three links: a third of the bandwidth is gone and there's one less link of redundancy. A quick look at interface status or ping results wouldn't reveal it.
 
 The two `show etherchannel summary` outputs taken just before this showed `Po1(SD)` with all three members `(s)`, because SW2 hadn't finished LACP negotiation yet. The bundle only came up at 21:48:30.
 
