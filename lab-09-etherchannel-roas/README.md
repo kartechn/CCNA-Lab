@@ -125,6 +125,131 @@ interface FastEthernet0/20
 
 Both VLANs are created on **both** switches. SW2 needs VLAN 10 too, or VLAN 10 wouldn't be active on its end of Po1. And SW1 must have VLAN 20 so it can forward PC2's frames between Po1 and the router trunk.
 
+## Full configuration commands
+
+These are the **exact commands typed in the Sandbox session**, copied from the console history in the export, in the order they were entered (including the `show` commands used to verify). Typing them on factory-default devices reproduces the lab.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### R1 (ISR4331)
+
+```text
+! Enter privileged EXEC mode
+R1>enable
+! Enter global configuration mode
+R1#conf t
+! Stop mistyped commands being treated as hostnames to look up
+R1(config)#no ip domain-lookup
+! Select interface g0/0
+R1(config)#interface g0/0
+! Enable the interface
+R1(config-if)#no shutdown
+! Create subinterface g0/0.10
+R1(config-if)#interface g0/0.10
+! Tag/accept VLAN 10 on this subinterface
+R1(config-subif)#encapsulation dot1q 10
+! Assign 192.168.10.1 / 255.255.255.0
+R1(config-subif)#ip address 192.168.10.1 255.255.255.0
+! Create subinterface g0/0.20
+R1(config-subif)#interface g0/0.20
+! Tag/accept VLAN 20 on this subinterface
+R1(config-subif)#encapsulation dot1q 20
+! Assign 192.168.20.1 / 255.255.255.0
+R1(config-subif)#ip address 192.168.20.1 255.255.255.0
+R1(config-subif)#end
+! Save the running config to NVRAM
+R1#write memory
+```
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW1(config)#vlan 10
+! Create VLAN 20 (and enter VLAN config mode)
+SW1(config-vlan)#vlan 20
+SW1(config-vlan)#exit
+! Select interface g0/1
+SW1(config)#interface g0/1
+! Make it an 802.1Q trunk
+SW1(config-if)#switchport mode trunk
+SW1(config-if)#exit
+! Select f0/1-2 and configure them together
+SW1(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+! Join Po1; LACP active: start LACP negotiation
+SW1(config-if-range)#channel-group 1 mode active
+SW1(config-if-range)#exit
+! Select interface f0/10
+SW1(config)#interface f0/10
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 10
+SW1(config-if)#switchport access vlan 10
+SW1(config-if)#end
+! Save the running config to NVRAM
+SW1#write memory
+```
+
+### SW2 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW2>enable
+! Enter global configuration mode
+SW2#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW2(config)#vlan 10
+! Create VLAN 20 (and enter VLAN config mode)
+SW2(config-vlan)#vlan 20
+SW2(config-vlan)#exit
+! Select f0/1-2 and configure them together
+SW2(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+! Join Po1; LACP passive: answer LACP but never start it
+SW2(config-if-range)#channel-group 1 mode passive
+SW2(config-if-range)#exit
+! Select interface f0/20
+SW2(config)#interface f0/20
+! Make it an access (host) port
+SW2(config-if)#switchport mode access
+! Put the port in VLAN 20
+SW2(config-if)#switchport access vlan 20
+SW2(config-if)#end
+! Save the running config to NVRAM
+SW2#write memory
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW2#show etherchannel summary | begin Group
+! Verify: trunk ports, encapsulation and allowed/active VLANs
+SW2#show interfaces trunk
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.10.10` | `255.255.255.0` | `192.168.10.1` |
+| PC2 | `192.168.20.10` | `255.255.255.0` | `192.168.20.1` |
+
+Then test from PC2's command prompt:
+
+```text
+! Test reachability to 192.168.10.10
+C:\> ping 192.168.10.10
+```
+
 ## How a packet gets from PC2 to PC1
 
 1. PC2 (VLAN 20) sends to its gateway `192.168.20.1`. SW2 tags the frame with VLAN 20 and sends it over **Po1**.

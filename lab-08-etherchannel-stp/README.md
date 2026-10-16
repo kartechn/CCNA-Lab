@@ -102,6 +102,167 @@ spanning-tree vlan 1,10 priority 28672
 
 `root primary` is a macro, not a stored setting. When run, it sets the priority to 24576, or lower if another switch already has a lower one. `root secondary` sets 28672. The config only keeps the resulting `priority`, so if a third switch later joins with a lower priority, DSW1 won't adjust automatically.
 
+## Full configuration commands
+
+These are the **exact commands typed in the Sandbox session**, copied from the console history in the export, in the order they were entered (including the `show` commands used to verify). Typing them on factory-default devices reproduces the lab. SW1's session ends with the failover test: shutting Po2, checking STP, and bringing Po2 back.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### DSW1 (WS-C3560-24TS)
+
+```text
+! Enter privileged EXEC mode
+DSW1>enable
+! Enter global configuration mode
+DSW1#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+DSW1(config)#vlan 10
+DSW1(config-vlan)#exit
+! Select f0/1-4 and configure them together
+DSW1(config)#interface range f0/1-4
+! 3560 only: choose 802.1Q before trunking
+DSW1(config-if-range)#switchport trunk encapsulation dot1q
+! Make it an 802.1Q trunk
+DSW1(config-if-range)#switchport mode trunk
+DSW1(config-if-range)#exit
+! Select f0/1-2 and configure them together
+DSW1(config)#interface range f0/1-2
+! Join Po1; LACP active: start LACP negotiation
+DSW1(config-if-range)#channel-group 1 mode active
+DSW1(config-if-range)#exit
+! Select f0/3-4 and configure them together
+DSW1(config)#interface range f0/3-4
+! Join Po2; LACP active: start LACP negotiation
+DSW1(config-if-range)#channel-group 2 mode active
+DSW1(config-if-range)#exit
+! Make this switch root for VLAN(s) 1,10 (saved as priority 24576)
+DSW1(config)#spanning-tree vlan 1,10 root primary
+DSW1(config)#end
+! Save the running config to NVRAM
+DSW1#write memory
+```
+
+### DSW2 (WS-C3560-24TS)
+
+```text
+! Enter privileged EXEC mode
+DSW2>enable
+! Enter global configuration mode
+DSW2#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+DSW2(config)#vlan 10
+DSW2(config-vlan)#exit
+! Select f0/1-4 and configure them together
+DSW2(config)#interface range f0/1-4
+! 3560 only: choose 802.1Q before trunking
+DSW2(config-if-range)#switchport trunk encapsulation dot1q
+! Make it an 802.1Q trunk
+DSW2(config-if-range)#switchport mode trunk
+DSW2(config-if-range)#exit
+! Select f0/1-2 and configure them together
+DSW2(config)#interface range f0/1-2
+! Join Po1; LACP passive: answer LACP but never start it
+DSW2(config-if-range)#channel-group 1 mode passive
+DSW2(config-if-range)#exit
+! Select f0/3-4 and configure them together
+DSW2(config)#interface range f0/3-4
+! Join Po3; LACP active: start LACP negotiation
+DSW2(config-if-range)#channel-group 3 mode active
+DSW2(config-if-range)#exit
+! Select interface f0/10
+DSW2(config)#interface f0/10
+! Make it an access (host) port
+DSW2(config-if)#switchport mode access
+! Put the port in VLAN 10
+DSW2(config-if)#switchport access vlan 10
+DSW2(config-if)#exit
+! Make this switch backup root for VLAN(s) 1,10 (saved as priority 28672)
+DSW2(config)#spanning-tree vlan 1,10 root secondary
+DSW2(config)#end
+! Save the running config to NVRAM
+DSW2#write memory
+```
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW1(config)#vlan 10
+SW1(config-vlan)#exit
+! Select f0/1-4 and configure them together
+SW1(config)#interface range f0/1-4
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+SW1(config-if-range)#exit
+! Select f0/1-2 and configure them together
+SW1(config)#interface range f0/1-2
+! Join Po2; LACP passive: answer LACP but never start it
+SW1(config-if-range)#channel-group 2 mode passive
+SW1(config-if-range)#exit
+! Select f0/3-4 and configure them together
+SW1(config)#interface range f0/3-4
+! Join Po3; LACP passive: answer LACP but never start it
+SW1(config-if-range)#channel-group 3 mode passive
+SW1(config-if-range)#exit
+! Select interface f0/10
+SW1(config)#interface f0/10
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 10
+SW1(config-if)#switchport access vlan 10
+SW1(config-if)#end
+! Save the running config to NVRAM
+SW1#write memory
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW1#show etherchannel summary | begin Group
+! Verify: STP root bridge and port roles/states
+SW1#show spanning-tree vlan 10
+! Enter global configuration mode
+SW1#conf t
+! Configure the logical Port-channel2 interface
+SW1(config)#interface port-channel 2
+! Disable the interface (failover test)
+SW1(config-if)#shutdown
+SW1(config-if)#end
+! Verify: STP root bridge and port roles/states
+SW1#show spanning-tree vlan 10 | begin Interface
+! Enter global configuration mode
+SW1#conf t
+! Configure the logical Port-channel2 interface
+SW1(config)#interface port-channel 2
+! Enable the interface
+SW1(config-if)#no shutdown
+SW1(config-if)#end
+! Verify: STP root bridge and port roles/states
+SW1#show spanning-tree vlan 10 | begin Interface
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.10.1` | `255.255.255.0` | none |
+| PC2 | `192.168.10.2` | `255.255.255.0` | none |
+
+Then test from PC2's command prompt:
+
+```text
+! Test reachability to 192.168.10.1
+C:\> ping 192.168.10.1
+! Test reachability to 192.168.10.1
+C:\> ping 192.168.10.1
+```
+
 ## Spanning tree results (VLAN 10)
 
 ### Observed on SW1

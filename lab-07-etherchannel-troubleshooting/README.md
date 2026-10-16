@@ -129,6 +129,186 @@ interface FastEthernet0/10
 
 All three fixes were applied and saved with `write memory` on SW2. SW1 needed no changes.
 
+## Full configuration commands
+
+These are the **exact commands typed in the Sandbox session**, copied from the console history in the export, in the order they were entered (including the `show` commands used to verify). Typing them on factory-default devices reproduces the lab. SW2's session contains the **broken build, the diagnosis and the fix**, in that order. To build the solved lab directly, use the clean commands at the end of this section.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 30 (and enter VLAN config mode)
+SW1(config)#vlan 30
+SW1(config-vlan)#exit
+! Select f0/1-3 and configure them together
+SW1(config)#interface range f0/1-3
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+! Join Po1; LACP passive: answer LACP but never start it
+SW1(config-if-range)#channel-group 1 mode passive
+SW1(config-if-range)#exit
+! Select interface f0/10
+SW1(config)#interface f0/10
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 30
+SW1(config-if)#switchport access vlan 30
+SW1(config-if)#end
+! Save the running config to NVRAM
+SW1#write memory
+```
+
+### SW2 (WS-C2960-24TT-L) – broken build, diagnosis and fix
+
+```text
+! Enter privileged EXEC mode
+SW2>enable
+! Enter global configuration mode
+SW2#conf t
+! Create VLAN 30 (and enter VLAN config mode)
+SW2(config)#vlan 30
+SW2(config-vlan)#exit
+! Create VLAN 31 (and enter VLAN config mode)
+SW2(config)#vlan 31
+SW2(config-vlan)#exit
+! Select f0/1-3 and configure them together
+SW2(config)#interface range f0/1-3
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+SW2(config-if-range)#exit
+! Select interface f0/3
+SW2(config)#interface f0/3
+! Allow only VLANs 1-20 on the trunk
+SW2(config-if)#switchport trunk allowed vlan 1-20
+SW2(config-if)#exit
+! Select f0/1-3 and configure them together
+SW2(config)#interface range f0/1-3
+! Join Po1; LACP passive: answer LACP but never start it
+SW2(config-if-range)#channel-group 1 mode passive
+SW2(config-if-range)#exit
+! Select interface f0/10
+SW2(config)#interface f0/10
+! Make it an access (host) port
+SW2(config-if)#switchport mode access
+! Put the port in VLAN 31
+SW2(config-if)#switchport access vlan 31
+SW2(config-if)#end
+! Save the running config to NVRAM
+SW2#write memory
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW2#show etherchannel summary | begin Group
+! Verify: VLANs and their access ports
+SW2#show vlan brief | include 30|31
+! Enter global configuration mode
+SW2#conf t
+! Select interface f0/3
+SW2(config)#interface f0/3
+! Allow all VLANs on the trunk (the default)
+SW2(config-if)#switchport trunk allowed vlan all
+SW2(config-if)#exit
+! Select f0/1-3 and configure them together
+SW2(config)#interface range f0/1-3
+! Join Po1; LACP active: start LACP negotiation
+SW2(config-if-range)#channel-group 1 mode active
+SW2(config-if-range)#exit
+! Select interface f0/10
+SW2(config)#interface f0/10
+! Put the port in VLAN 30
+SW2(config-if)#switchport access vlan 30
+SW2(config-if)#end
+! Save the running config to NVRAM
+SW2#write memory
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW2#show etherchannel summary | begin Group
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.30.1` | `255.255.255.0` | none |
+| PC2 | `192.168.30.2` | `255.255.255.0` | none |
+
+Then test from PC2's command prompt:
+
+```text
+! Test reachability to 192.168.30.1
+C:\> ping 192.168.30.1
+! Test reachability to 192.168.30.1
+C:\> ping 192.168.30.1
+```
+
+### Solved build from scratch
+
+These commands build the working lab in one pass, matching the saved configs:
+
+#### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 30 (and enter VLAN config mode)
+SW1(config)#vlan 30
+SW1(config-vlan)#exit
+! Select f0/1-3 and configure them together
+SW1(config)#interface range f0/1-3
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+! Join Po1; LACP passive: answer LACP but never start it
+SW1(config-if-range)#channel-group 1 mode passive
+SW1(config-if-range)#exit
+! Select interface f0/10
+SW1(config)#interface f0/10
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 30
+SW1(config-if)#switchport access vlan 30
+SW1(config-if)#end
+! Save the running config to NVRAM
+SW1#write memory
+```
+
+#### SW2 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW2>enable
+! Enter global configuration mode
+SW2#conf t
+! Create VLAN 30 (and enter VLAN config mode)
+SW2(config)#vlan 30
+SW2(config-vlan)#exit
+! Select f0/1-3 and configure them together
+SW2(config)#interface range f0/1-3
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+! Join Po1; LACP active: start LACP negotiation
+SW2(config-if-range)#channel-group 1 mode active
+SW2(config-if-range)#exit
+! Select interface f0/10
+SW2(config)#interface f0/10
+! Make it an access (host) port
+SW2(config-if)#switchport mode access
+! Put the port in VLAN 30
+SW2(config-if)#switchport access vlan 30
+SW2(config-if)#end
+! Save the running config to NVRAM
+SW2#write memory
+```
+
 ## Verification after the fix
 
 | Check | Command/test | Result |

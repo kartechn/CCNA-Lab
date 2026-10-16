@@ -143,6 +143,136 @@ interface Vlan20
 
 Each ACL is applied **inbound** on its VLAN's SVI, so it filters traffic as it enters DSW1 from that VLAN, before the routing decision. The `permit ip any any` line is needed. Without it, the implicit `deny any` at the end of every ACL would block all traffic from the VLAN, including traffic to the gateway itself.
 
+## Full configuration commands
+
+These commands rebuild the saved configs in [`configs/`](configs/). The export has no console history for this lab, so they come from the configs rather than a recorded session. Typing them on factory-default switches gives the same result.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### DSW1 (WS-C3560-24TS)
+
+```text
+! Enter privileged EXEC mode
+DSW1>enable
+! Enter global configuration mode
+DSW1#conf t
+! Turn on IPv4 routing (needed on a multilayer switch)
+DSW1(config)#ip routing
+! Create VLAN 10 (and enter VLAN config mode)
+DSW1(config)#vlan 10
+! Name the VLAN "buss"
+DSW1(config-vlan)#name buss
+! Create VLAN 20 (and enter VLAN config mode)
+DSW1(config-vlan)#vlan 20
+! Name the VLAN "crew"
+DSW1(config-vlan)#name crew
+DSW1(config-vlan)#exit
+! Select interface g0/1
+DSW1(config)#interface g0/1
+! 3560 only: choose 802.1Q before trunking
+DSW1(config-if)#switchport trunk encapsulation dot1q
+! Make it an 802.1Q trunk
+DSW1(config-if)#switchport mode trunk
+DSW1(config-if)#exit
+! Create the SVI (gateway interface) for VLAN 10
+DSW1(config)#interface vlan 10
+! Assign 192.168.10.1 / 255.255.255.0
+DSW1(config-if)#ip address 192.168.10.1 255.255.255.0
+! Enable the interface
+DSW1(config-if)#no shutdown
+! Create the SVI (gateway interface) for VLAN 20
+DSW1(config-if)#interface vlan 20
+! Assign 192.168.20.1 / 255.255.255.0
+DSW1(config-if)#ip address 192.168.20.1 255.255.255.0
+! Enable the interface
+DSW1(config-if)#no shutdown
+DSW1(config-if)#exit
+! Create named extended ACL block-buss-to-crew
+DSW1(config)#ip access-list extended block-buss-to-crew
+! ACL entry: deny ip 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255
+DSW1(config-ext-nacl)#deny ip 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255
+! ACL entry: permit ip any any
+DSW1(config-ext-nacl)#permit ip any any
+DSW1(config-ext-nacl)#exit
+! Create named extended ACL block-crew-to-buss
+DSW1(config)#ip access-list extended block-crew-to-buss
+! ACL entry: deny ip 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255
+DSW1(config-ext-nacl)#deny ip 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255
+! ACL entry: permit ip any any
+DSW1(config-ext-nacl)#permit ip any any
+DSW1(config-ext-nacl)#exit
+! Create the SVI (gateway interface) for VLAN 10
+DSW1(config)#interface vlan 10
+! Apply ACL block-buss-to-crew to traffic entering this interface
+DSW1(config-if)#ip access-group block-buss-to-crew in
+! Create the SVI (gateway interface) for VLAN 20
+DSW1(config-if)#interface vlan 20
+! Apply ACL block-crew-to-buss to traffic entering this interface
+DSW1(config-if)#ip access-group block-crew-to-buss in
+DSW1(config-if)#end
+! Save the running config to NVRAM
+DSW1#write memory
+```
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW1(config)#vlan 10
+! Name the VLAN "buss"
+SW1(config-vlan)#name Buss
+! Create VLAN 20 (and enter VLAN config mode)
+SW1(config-vlan)#vlan 20
+! Name the VLAN "crew"
+SW1(config-vlan)#name crew
+SW1(config-vlan)#exit
+! Select interface f0/1
+SW1(config)#interface f0/1
+! Make it an 802.1Q trunk
+SW1(config-if)#switchport mode trunk
+! Select interface g0/1
+SW1(config-if)#interface g0/1
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 20
+SW1(config-if)#switchport access vlan 20
+! Select interface g0/2
+SW1(config-if)#interface g0/2
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 10
+SW1(config-if)#switchport access vlan 10
+SW1(config-if)#end
+! Save the running config to NVRAM
+SW1#write memory
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.10.10` | `255.255.255.0` | `192.168.10.1` |
+| PC2 | `192.168.20.10` | `255.255.255.0` | `192.168.20.1` |
+
+Then test from PC1's command prompt:
+
+```text
+! Test reachability to 192.168.10.1
+C:\> ping 192.168.10.1
+! Test reachability to 192.168.20.10
+C:\> ping 192.168.20.10
+```
+
 ## Expected verification results
 
 What the configuration should produce. Run these yourself in the Sandbox and replace this table with what you observe.

@@ -116,6 +116,146 @@ interface FastEthernet0/10
 
 SW2 is the same with `vlan 20`, `channel-group 2` and `switchport access vlan 20`. The 2960 only supports 802.1Q, so it doesn't need an encapsulation command. `passive` only answers LACP, which works here because DSW1's end is `active`.
 
+## Full configuration commands
+
+These are the **exact commands typed in the Sandbox session**, copied from the console history in the export, in the order they were entered (including the `show` commands used to verify). Typing them on factory-default devices reproduces the lab.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### DSW1 (WS-C3560-24TS)
+
+```text
+! Enter privileged EXEC mode
+DSW1>enable
+! Enter global configuration mode
+DSW1#conf t
+! Turn on IPv4 routing (needed on a multilayer switch)
+DSW1(config)#ip routing
+! Create VLAN 10 (and enter VLAN config mode)
+DSW1(config)#vlan 10
+! Create VLAN 20 (and enter VLAN config mode)
+DSW1(config-vlan)#vlan 20
+DSW1(config-vlan)#exit
+! Select f0/1-2 and configure them together
+DSW1(config)#interface range f0/1-2
+! 3560 only: choose 802.1Q before trunking
+DSW1(config-if-range)#switchport trunk encapsulation dot1q
+! Make it an 802.1Q trunk
+DSW1(config-if-range)#switchport mode trunk
+! Join Po1; LACP active: start LACP negotiation
+DSW1(config-if-range)#channel-group 1 mode active
+DSW1(config-if-range)#exit
+! Select f0/3-4 and configure them together
+DSW1(config)#interface range f0/3-4
+! 3560 only: choose 802.1Q before trunking
+DSW1(config-if-range)#switchport trunk encapsulation dot1q
+! Make it an 802.1Q trunk
+DSW1(config-if-range)#switchport mode trunk
+! Join Po2; LACP active: start LACP negotiation
+DSW1(config-if-range)#channel-group 2 mode active
+DSW1(config-if-range)#exit
+! Create the SVI (gateway interface) for VLAN 10
+DSW1(config)#interface vlan 10
+! Assign 192.168.10.1 / 255.255.255.0
+DSW1(config-if)#ip address 192.168.10.1 255.255.255.0
+! Enable the interface
+DSW1(config-if)#no shutdown
+DSW1(config-if)#exit
+! Create the SVI (gateway interface) for VLAN 20
+DSW1(config)#interface vlan 20
+! Assign 192.168.20.1 / 255.255.255.0
+DSW1(config-if)#ip address 192.168.20.1 255.255.255.0
+! Enable the interface
+DSW1(config-if)#no shutdown
+DSW1(config-if)#end
+! Save the running config to NVRAM
+DSW1#write memory
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+DSW1#show etherchannel summary | begin Group
+! Verify: interface IPs and up/up status
+DSW1#show ip interface brief | include Vlan|Port
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+DSW1#show etherchannel summary | begin Group
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+DSW1#show etherchannel summary | begin Group
+```
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW1(config)#vlan 10
+SW1(config-vlan)#exit
+! Select f0/1-2 and configure them together
+SW1(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+! Join Po1; LACP passive: answer LACP but never start it
+SW1(config-if-range)#channel-group 1 mode passive
+SW1(config-if-range)#exit
+! Select interface f0/10
+SW1(config)#interface f0/10
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 10
+SW1(config-if)#switchport access vlan 10
+SW1(config-if)#end
+! Save the running config to NVRAM
+SW1#write memory
+```
+
+### SW2 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW2>enable
+! Enter global configuration mode
+SW2#conf t
+! Create VLAN 20 (and enter VLAN config mode)
+SW2(config)#vlan 20
+SW2(config-vlan)#exit
+! Select f0/1-2 and configure them together
+SW2(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+! Join Po2; LACP passive: answer LACP but never start it
+SW2(config-if-range)#channel-group 2 mode passive
+SW2(config-if-range)#exit
+! Select interface f0/10
+SW2(config)#interface f0/10
+! Make it an access (host) port
+SW2(config-if)#switchport mode access
+! Put the port in VLAN 20
+SW2(config-if)#switchport access vlan 20
+SW2(config-if)#end
+! Save the running config to NVRAM
+SW2#write memory
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.10.10` | `255.255.255.0` | `192.168.10.1` |
+| PC2 | `192.168.20.10` | `255.255.255.0` | `192.168.20.1` |
+
+Then test from PC2's command prompt:
+
+```text
+! Test reachability to 192.168.10.10
+C:\> ping 192.168.10.10
+```
+
 ## What the console output shows
 
 The export includes the console session, so you can see the build happen step by step.

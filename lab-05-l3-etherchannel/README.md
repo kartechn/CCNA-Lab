@@ -101,6 +101,124 @@ ip route 10.1.1.0 255.255.255.0 10.0.12.1
 
 Each switch only knows its directly connected subnets. Each static route points at the far end of the /30, so traffic to the remote PC subnet goes over Po1.
 
+## Full configuration commands
+
+These commands are the **build plan**. The export has no saved configs for this lab, so they haven't been checked against Sandbox output yet. Type them on factory-default switches, then compare your results with the expected values below.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### DSW1 (WS-C3560-24TS)
+
+```text
+! Enter privileged EXEC mode
+DSW1>enable
+! Enter global configuration mode
+DSW1#conf t
+! Turn on IPv4 routing (needed on a multilayer switch)
+DSW1(config)#ip routing
+! Select f0/1-4 and configure them together
+DSW1(config)#interface range f0/1-4
+! Make it a routed (Layer 3) port
+DSW1(config-if-range)#no switchport
+! No IP address on this interface
+DSW1(config-if-range)#no ip address
+! Ask the partner for LACPDUs every 1 s instead of 30 s
+DSW1(config-if-range)#lacp rate fast
+! Join Po1; LACP active: start LACP negotiation
+DSW1(config-if-range)#channel-group 1 mode active
+DSW1(config-if-range)#exit
+! Configure the logical Port-channel1 interface
+DSW1(config)#interface port-channel 1
+! Make it a routed (Layer 3) port
+DSW1(config-if)#no switchport
+! Assign 10.0.12.1 / 255.255.255.252
+DSW1(config-if)#ip address 10.0.12.1 255.255.255.252
+! At most 2 active members, the rest hot-standby
+DSW1(config-if)#lacp max-bundle 2
+DSW1(config-if)#exit
+! Select interface f0/10
+DSW1(config)#interface f0/10
+! Make it a routed (Layer 3) port
+DSW1(config-if)#no switchport
+! Assign 10.1.1.1 / 255.255.255.0
+DSW1(config-if)#ip address 10.1.1.1 255.255.255.0
+! Enable the interface
+DSW1(config-if)#no shutdown
+DSW1(config-if)#exit
+! Static route to 10.2.2.0/255.255.255.0 via 10.0.12.2
+DSW1(config)#ip route 10.2.2.0 255.255.255.0 10.0.12.2
+DSW1(config)#end
+! Save the running config to NVRAM
+DSW1#write memory
+```
+
+### DSW2 (WS-C3560-24TS)
+
+```text
+! Enter privileged EXEC mode
+DSW2>enable
+! Enter global configuration mode
+DSW2#conf t
+! Turn on IPv4 routing (needed on a multilayer switch)
+DSW2(config)#ip routing
+! Select f0/1-4 and configure them together
+DSW2(config)#interface range f0/1-4
+! Make it a routed (Layer 3) port
+DSW2(config-if-range)#no switchport
+! No IP address on this interface
+DSW2(config-if-range)#no ip address
+! Ask the partner for LACPDUs every 1 s instead of 30 s
+DSW2(config-if-range)#lacp rate fast
+! Join Po1; LACP active: start LACP negotiation
+DSW2(config-if-range)#channel-group 1 mode active
+DSW2(config-if-range)#exit
+! Configure the logical Port-channel1 interface
+DSW2(config)#interface port-channel 1
+! Make it a routed (Layer 3) port
+DSW2(config-if)#no switchport
+! Assign 10.0.12.2 / 255.255.255.252
+DSW2(config-if)#ip address 10.0.12.2 255.255.255.252
+! At most 2 active members, the rest hot-standby
+DSW2(config-if)#lacp max-bundle 2
+DSW2(config-if)#exit
+! Select interface f0/10
+DSW2(config)#interface f0/10
+! Make it a routed (Layer 3) port
+DSW2(config-if)#no switchport
+! Assign 10.2.2.1 / 255.255.255.0
+DSW2(config-if)#ip address 10.2.2.1 255.255.255.0
+! Enable the interface
+DSW2(config-if)#no shutdown
+DSW2(config-if)#exit
+! Static route to 10.1.1.0/255.255.255.0 via 10.0.12.1
+DSW2(config)#ip route 10.1.1.0 255.255.255.0 10.0.12.1
+DSW2(config)#end
+! Save the running config to NVRAM
+DSW2#write memory
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `10.1.1.10` | `255.255.255.0` | `10.1.1.1` |
+| PC2 | `10.2.2.10` | `255.255.255.0` | `10.2.2.1` |
+
+Then test from PC1's command prompt:
+
+```text
+! Test reachability to 10.2.2.10
+C:\> ping 10.2.2.10
+! Trace the routed path
+C:\> tracert 10.2.2.10
+```
+
 ## Layer 2 vs Layer 3 EtherChannel
 
 | | Layer 2 (Lab 04) | Layer 3 (this lab) |

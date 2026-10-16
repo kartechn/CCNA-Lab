@@ -35,6 +35,126 @@ The goal is to **learn the mode compatibility rules by seeing every failure mode
 
 There are no hosts or VLANs in this lab. All links are 802.1Q trunks (`switchport mode trunk` on both ends) with only VLAN 1 present.
 
+## Full configuration commands
+
+These are the **exact commands typed in the Sandbox session**, copied from the console history in the export, in the order they were entered (including the `show` commands used to verify). Typing them on factory-default devices reproduces the lab. The four pairings are broken on purpose. The fixes are under [Fixing each one](#fixing-each-one).
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Select f0/1-8 and configure them together
+SW1(config)#interface range f0/1-8
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+SW1(config-if-range)#exit
+! Select f0/1-2 and configure them together
+SW1(config)#interface range f0/1-2
+! Join Po1; LACP active: start LACP negotiation
+SW1(config-if-range)#channel-group 1 mode active
+SW1(config-if-range)#exit
+! Select f0/3-4 and configure them together
+SW1(config)#interface range f0/3-4
+! Join Po2; PAgP auto: answer PAgP but never start it
+SW1(config-if-range)#channel-group 2 mode auto
+SW1(config-if-range)#exit
+! Select f0/5-6 and configure them together
+SW1(config)#interface range f0/5-6
+! Join Po3; static, no negotiation (the far end must also be "on")
+SW1(config-if-range)#channel-group 3 mode on
+SW1(config-if-range)#exit
+! Select f0/7-8 and configure them together
+SW1(config)#interface range f0/7-8
+! Join Po4; LACP active: start LACP negotiation
+SW1(config-if-range)#channel-group 4 mode active
+SW1(config-if-range)#end
+! Save the running config to NVRAM
+SW1#write memory
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW1#show etherchannel summary | begin Group
+! Verify: link state of each port (connected, err-disabled, suspended)
+SW1#show interfaces status | include Fa0/[1-8]
+```
+
+### SW2 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW2>enable
+! Enter global configuration mode
+SW2#conf t
+! Select f0/1-2 and configure them together
+SW2(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+! Join Po1; LACP passive: answer LACP but never start it
+SW2(config-if-range)#channel-group 1 mode passive
+SW2(config-if-range)#end
+! Save the running config to NVRAM
+SW2#write memory
+```
+
+### SW3 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW3>enable
+! Enter global configuration mode
+SW3#conf t
+! Select f0/1-2 and configure them together
+SW3(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW3(config-if-range)#switchport mode trunk
+! Join Po1; PAgP auto: answer PAgP but never start it
+SW3(config-if-range)#channel-group 1 mode auto
+SW3(config-if-range)#end
+! Save the running config to NVRAM
+SW3#write memory
+```
+
+### SW4 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW4>enable
+! Enter global configuration mode
+SW4#conf t
+! Select f0/1-2 and configure them together
+SW4(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW4(config-if-range)#switchport mode trunk
+SW4(config-if-range)#end
+! Save the running config to NVRAM
+SW4#write memory
+```
+
+### SW5 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW5>enable
+! Enter global configuration mode
+SW5#conf t
+! Select f0/1-2 and configure them together
+SW5(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW5(config-if-range)#switchport mode trunk
+! Join Po1; PAgP desirable: start PAgP negotiation
+SW5(config-if-range)#channel-group 1 mode desirable
+SW5(config-if-range)#end
+! Save the running config to NVRAM
+SW5#write memory
+```
+
 ## The matrix
 
 | Bundle | SW1 ports | SW1 mode | Spoke | Spoke mode | Predict first, then check below |

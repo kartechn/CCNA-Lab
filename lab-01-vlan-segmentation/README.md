@@ -106,6 +106,65 @@ Rapid-PVST+ runs one spanning-tree instance per VLAN. `portfast edge default` tu
 | PC1 | IP `192.168.10.10`, mask `255.255.255.0`, no gateway |
 | PC2 | IP `192.168.20.10`, mask `255.255.255.0`, no gateway |
 
+## Full configuration commands
+
+These commands rebuild the saved configs in [`configs/`](configs/). The export has no console history for this lab, so they come from the configs rather than a recorded session. Typing them on factory-default switches gives the same result.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW1(config)#vlan 10
+! Name the VLAN "buss"
+SW1(config-vlan)#name Buss
+! Create VLAN 20 (and enter VLAN config mode)
+SW1(config-vlan)#vlan 20
+! Name the VLAN "crew"
+SW1(config-vlan)#name crew
+SW1(config-vlan)#exit
+! Select interface g0/1
+SW1(config)#interface g0/1
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 10
+SW1(config-if)#switchport access vlan 10
+! Select interface g0/2
+SW1(config-if)#interface g0/2
+! Make it an access (host) port
+SW1(config-if)#switchport mode access
+! Put the port in VLAN 20
+SW1(config-if)#switchport access vlan 20
+SW1(config-if)#end
+! Save the running config to NVRAM
+SW1#write memory
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.10.10` | `255.255.255.0` | none |
+| PC2 | `192.168.20.10` | `255.255.255.0` | none |
+
+Then test from PC1's command prompt:
+
+```text
+! Test reachability to 192.168.20.10
+C:\> ping 192.168.20.10
+```
+
 ## Expected verification results
 
 What the configuration should produce. Run these yourself in the Sandbox and record what you see.

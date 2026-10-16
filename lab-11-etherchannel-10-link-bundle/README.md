@@ -73,6 +73,97 @@ interface range FastEthernet0/1 - 10
  channel-group 1 mode passive
 ```
 
+## Full configuration commands
+
+These are the **exact commands typed in the Sandbox session**, copied from the console history in the export, in the order they were entered (including the `show` commands used to verify). Typing them on factory-default devices reproduces the lab. SW1's session ends with the single-link test: shutting Fa0/1-9, checking the bundle, and bringing them back.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! LACP system priority 100 (lower wins: this switch picks the active members)
+SW1(config)#lacp system-priority 100
+! Select f0/1-10 and configure them together
+SW1(config)#interface range f0/1-10
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+! Join Po1; LACP active: start LACP negotiation
+SW1(config-if-range)#channel-group 1 mode active
+SW1(config-if-range)#exit
+! Select f0/9-10 and configure them together
+SW1(config)#interface range f0/9-10
+! LACP port priority 100 (lower is preferred as an active member)
+SW1(config-if-range)#lacp port-priority 100
+SW1(config-if-range)#end
+! Save the running config to NVRAM
+SW1#write memory
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW1#show etherchannel summary | begin Group
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW1#show etherchannel summary | begin Group
+! Enter global configuration mode
+SW1#conf t
+! Select f0/1-9 and configure them together
+SW1(config)#interface range f0/1-9
+! Disable the interface (failover test)
+SW1(config-if-range)#shutdown
+SW1(config-if-range)#end
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW1#show etherchannel summary | begin Group
+! Enter global configuration mode
+SW1#conf t
+! Select f0/1-9 and configure them together
+SW1(config)#interface range f0/1-9
+! Enable the interface
+SW1(config-if-range)#no shutdown
+SW1(config-if-range)#end
+! Verify: port-channel state (SU/SD) and member flags (P, s, I, D, H)
+SW1#show etherchannel summary | begin Group
+```
+
+### SW2 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW2>enable
+! Enter global configuration mode
+SW2#conf t
+! Select f0/1-10 and configure them together
+SW2(config)#interface range f0/1-10
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+! Join Po1; LACP passive: answer LACP but never start it
+SW2(config-if-range)#channel-group 1 mode passive
+SW2(config-if-range)#end
+! Save the running config to NVRAM
+SW2#write memory
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.1.1` | `255.255.255.0` | none |
+| PC2 | `192.168.1.2` | `255.255.255.0` | none |
+
+Then test from PC2's command prompt:
+
+```text
+! Test reachability to 192.168.1.1
+C:\> ping 192.168.1.1
+```
+
 ## How LACP picks the active members (real IOS)
 
 When more members are configured than can be active, LACP decides in two steps.

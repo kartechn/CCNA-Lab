@@ -116,6 +116,152 @@ interface Port-channel1
 
 `mode active` on both ends negotiates the bundle with **LACP** (IEEE 802.3ad). STP treats `Po1` as **one logical link** with a lower path cost than a single FastEthernet link. If one member link fails, the bundle stays up and STP doesn't need to reconverge.
 
+## Full configuration commands
+
+These commands rebuild the saved configs in [`configs/`](configs/). The export has no console history for this lab, so they come from the configs rather than a recorded session. Typing them on factory-default switches gives the same result. SW1 also has an unused VLAN 2 in its VLAN database, which isn't needed and is left out here. The host ports are left unconfigured, matching the saved configs, so the PCs are in VLAN 1 (see Challenge 6).
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW1(config)#vlan 10
+! Name the VLAN "buss"
+SW1(config-vlan)#name buss
+! Create VLAN 20 (and enter VLAN config mode)
+SW1(config-vlan)#vlan 20
+! Name the VLAN "crew"
+SW1(config-vlan)#name crew
+SW1(config-vlan)#exit
+! Set bridge priority 24576 for VLAN(s) 10,20
+SW1(config)#spanning-tree vlan 10,20 priority 24576
+! Select g0/1-2 and configure them together
+SW1(config)#interface range g0/1-2
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+SW1(config-if-range)#end
+! Save the running config to NVRAM
+SW1#write memory
+```
+
+### SW2 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW2>enable
+! Enter global configuration mode
+SW2#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW2(config)#vlan 10
+! Name the VLAN "buss"
+SW2(config-vlan)#name buss
+! Create VLAN 20 (and enter VLAN config mode)
+SW2(config-vlan)#vlan 20
+! Name the VLAN "crew"
+SW2(config-vlan)#name crew
+SW2(config-vlan)#exit
+! Set bridge priority 28672 for VLAN(s) 10,20
+SW2(config)#spanning-tree vlan 10,20 priority 28672
+! Select g0/1-2 and configure them together
+SW2(config)#interface range g0/1-2
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+SW2(config-if-range)#end
+! Save the running config to NVRAM
+SW2#write memory
+```
+
+### SW3 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW3>enable
+! Enter global configuration mode
+SW3#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW3(config)#vlan 10
+! Name the VLAN "buss"
+SW3(config-vlan)#name buss
+! Create VLAN 20 (and enter VLAN config mode)
+SW3(config-vlan)#vlan 20
+! Name the VLAN "crew"
+SW3(config-vlan)#name crew
+SW3(config-vlan)#exit
+! Select f0/3-4 and configure them together
+SW3(config)#interface range f0/3-4
+! Make it an 802.1Q trunk
+SW3(config-if-range)#switchport mode trunk
+! Join Po1; LACP active: start LACP negotiation
+SW3(config-if-range)#channel-group 1 mode active
+SW3(config-if-range)#exit
+! Configure the logical Port-channel1 interface
+SW3(config)#interface port-channel 1
+! Make it an 802.1Q trunk
+SW3(config-if)#switchport mode trunk
+SW3(config-if)#end
+! Save the running config to NVRAM
+SW3#write memory
+```
+
+### SW4 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW4>enable
+! Enter global configuration mode
+SW4#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW4(config)#vlan 10
+! Name the VLAN "buss"
+SW4(config-vlan)#name buss
+! Create VLAN 20 (and enter VLAN config mode)
+SW4(config-vlan)#vlan 20
+! Name the VLAN "crew"
+SW4(config-vlan)#name crew
+SW4(config-vlan)#exit
+! Select f0/3-4 and configure them together
+SW4(config)#interface range f0/3-4
+! Make it an 802.1Q trunk
+SW4(config-if-range)#switchport mode trunk
+! Join Po1; LACP active: start LACP negotiation
+SW4(config-if-range)#channel-group 1 mode active
+SW4(config-if-range)#exit
+! Configure the logical Port-channel1 interface
+SW4(config)#interface port-channel 1
+! Make it an 802.1Q trunk
+SW4(config-if)#switchport mode trunk
+SW4(config-if)#end
+! Save the running config to NVRAM
+SW4#write memory
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.10.11` | `255.255.255.0` | `192.168.10.1` |
+| PC2 | `192.168.10.12` | `255.255.255.0` | `192.168.10.1` |
+| PC3 | `192.168.20.11` | `255.255.255.0` | `192.168.20.1` |
+| PC4 | `192.168.20.12` | `255.255.255.0` | `192.168.20.1` |
+
+Then test from PC1's command prompt:
+
+```text
+! Test reachability to 192.168.10.12
+C:\> ping 192.168.10.12
+```
+
 ## Expected STP port roles (VLANs 10 and 20)
 
 Default "short" path costs are GigabitEthernet = 4 and FastEthernet = 19. A 2 × FastEthernet bundle costs less than 19 but more than 4.

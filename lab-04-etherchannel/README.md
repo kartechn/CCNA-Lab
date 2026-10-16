@@ -128,6 +128,140 @@ interface FastEthernet0/10
 
 Every member of a bundle must match on speed, duplex, switchport mode, access VLAN or allowed/native VLANs. A mismatched member is suspended (`s`) and not added. Configure the members together with `interface range` to avoid this.
 
+## Full configuration commands
+
+These commands are the **build plan**. The export has no saved configs for this lab, so they haven't been checked against Sandbox output yet. Type them on factory-default switches, then compare your results with the expected values below.
+
+How to read the blocks:
+
+- Lines starting with `!` explain the command below them. Don't type them.
+- The prompt (`SW1(config-if-range)#`) shows which mode you're in. Type only the text after `#` or `>`.
+- Abbreviations such as `conf t` and `f0/1-2` are accepted by IOS, the same as `configure terminal` and `FastEthernet0/1 - 2`.
+
+### SW1 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW1>enable
+! Enter global configuration mode
+SW1#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW1(config)#vlan 10
+! Name the VLAN "users"
+SW1(config-vlan)#name USERS
+SW1(config-vlan)#exit
+! Select f0/1-2 and configure them together
+SW1(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+! Join Po1; LACP active: start LACP negotiation
+SW1(config-if-range)#channel-group 1 mode active
+SW1(config-if-range)#exit
+! Select f0/3-4 and configure them together
+SW1(config)#interface range f0/3-4
+! Make it an 802.1Q trunk
+SW1(config-if-range)#switchport mode trunk
+! Join Po2; PAgP desirable: start PAgP negotiation
+SW1(config-if-range)#channel-group 2 mode desirable
+SW1(config-if-range)#end
+! Save the running config to NVRAM
+SW1#write memory
+```
+
+### SW2 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW2>enable
+! Enter global configuration mode
+SW2#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW2(config)#vlan 10
+! Name the VLAN "users"
+SW2(config-vlan)#name USERS
+SW2(config-vlan)#exit
+! Select f0/1-2 and configure them together
+SW2(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+! Join Po1; LACP active: start LACP negotiation
+SW2(config-if-range)#channel-group 1 mode active
+SW2(config-if-range)#exit
+! Select f0/3-4 and configure them together
+SW2(config)#interface range f0/3-4
+! Make it an 802.1Q trunk
+SW2(config-if-range)#switchport mode trunk
+! Join Po3; static, no negotiation (the far end must also be "on")
+SW2(config-if-range)#channel-group 3 mode on
+SW2(config-if-range)#exit
+! Select interface f0/10
+SW2(config)#interface f0/10
+! Make it an access (host) port
+SW2(config-if)#switchport mode access
+! Put the port in VLAN 10
+SW2(config-if)#switchport access vlan 10
+! Host port: skip the STP listening/learning wait
+SW2(config-if)#spanning-tree portfast
+SW2(config-if)#end
+! Save the running config to NVRAM
+SW2#write memory
+```
+
+### SW3 (WS-C2960-24TT-L)
+
+```text
+! Enter privileged EXEC mode
+SW3>enable
+! Enter global configuration mode
+SW3#conf t
+! Create VLAN 10 (and enter VLAN config mode)
+SW3(config)#vlan 10
+! Name the VLAN "users"
+SW3(config-vlan)#name USERS
+SW3(config-vlan)#exit
+! Select f0/1-2 and configure them together
+SW3(config)#interface range f0/1-2
+! Make it an 802.1Q trunk
+SW3(config-if-range)#switchport mode trunk
+! Join Po2; PAgP desirable: start PAgP negotiation
+SW3(config-if-range)#channel-group 2 mode desirable
+SW3(config-if-range)#exit
+! Select f0/3-4 and configure them together
+SW3(config)#interface range f0/3-4
+! Make it an 802.1Q trunk
+SW3(config-if-range)#switchport mode trunk
+! Join Po3; static, no negotiation (the far end must also be "on")
+SW3(config-if-range)#channel-group 3 mode on
+SW3(config-if-range)#exit
+! Select interface f0/10
+SW3(config)#interface f0/10
+! Make it an access (host) port
+SW3(config-if)#switchport mode access
+! Put the port in VLAN 10
+SW3(config-if)#switchport access vlan 10
+! Host port: skip the STP listening/learning wait
+SW3(config-if)#spanning-tree portfast
+SW3(config-if)#end
+! Save the running config to NVRAM
+SW3#write memory
+```
+
+### PCs
+
+Set these in each PC's IP configuration:
+
+| PC | IP address | Subnet mask | Default gateway |
+|---|---|---|---|
+| PC1 | `192.168.10.1` | `255.255.255.0` | none |
+| PC2 | `192.168.10.2` | `255.255.255.0` | none |
+
+Then test from PC1's command prompt:
+
+```text
+! Test reachability to 192.168.10.2
+C:\> ping 192.168.10.2
+```
+
 ## Spanning tree over the triangle
 
 The three port-channels form a loop. STP sees each port-channel as **one logical port**, so it blocks a whole bundle, never a single member link. All priorities are at the default (32768 + VLAN), so the root bridge is the switch with the **lowest MAC address**. The bundle between the two non-root switches has one end in the Alternate (discarding) role. Check which one with `show spanning-tree vlan 10`.
