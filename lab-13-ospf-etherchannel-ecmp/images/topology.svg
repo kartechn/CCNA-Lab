@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="540" viewBox="0 0 760 540" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="540" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">OSPF over Layer 3 EtherChannel (ECMP)</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">auto-cost reference-bandwidth 1000 · cost = 1000 / Mbps · area 0</text>
+
+  <!-- Po1 (2 x Fa) -->
+  <line x1="260" y1="124" x2="500" y2="124" stroke="#8250df" stroke-width="3"/>
+  <line x1="260" y1="136" x2="500" y2="136" stroke="#8250df" stroke-width="3"/>
+  <ellipse cx="300" cy="130" rx="9" ry="16" fill="none" stroke="#8250df" stroke-width="2"/>
+  <ellipse cx="460" cy="130" rx="9" ry="16" fill="none" stroke="#8250df" stroke-width="2"/>
+  <text x="380" y="104" text-anchor="middle" font-size="12" font-weight="bold" fill="#8250df">Po1 · routed LACP · Fa0/1-2 · 200 Mbps · cost 5</text>
+  <text x="380" y="116" text-anchor="middle" font-size="11" fill="#8250df">10.0.12.1/30 ↔ 10.0.12.2/30</text>
+
+  <!-- Fa0/3 single link -->
+  <line x1="260" y1="190" x2="500" y2="190" stroke="#bc4c00" stroke-width="3" stroke-dasharray="8 5"/>
+  <text x="380" y="182" text-anchor="middle" font-size="12" font-weight="bold" fill="#bc4c00">Fa0/3 · routed · 100 Mbps · cost 10</text>
+  <text x="380" y="208" text-anchor="middle" font-size="11" fill="#bc4c00">10.0.21.1/30 ↔ 10.0.21.2/30</text>
+
+  <!-- routers -->
+  <rect x="140" y="108" width="120" height="96" rx="6" fill="#0969da"/>
+  <text x="200" y="152" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">DSW1</text>
+  <text x="200" y="170" text-anchor="middle" font-size="11" fill="#ffffff">RID 1.1.1.1</text>
+  <rect x="500" y="108" width="120" height="96" rx="6" fill="#0969da"/>
+  <text x="560" y="152" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">DSW2</text>
+  <text x="560" y="170" text-anchor="middle" font-size="11" fill="#ffffff">RID 2.2.2.2</text>
+  <g text-anchor="middle" font-size="11" fill="#57606a">
+    <text x="200" y="80">WS-C3560-24TS · ip routing</text><text x="560" y="80">WS-C3560-24TS · ip routing</text>
+  </g>
+
+  <!-- PCs -->
+  <g stroke="#57606a" stroke-width="2"><line x1="200" y1="204" x2="200" y2="300"/><line x1="560" y1="204" x2="560" y2="300"/></g>
+  <g font-size="11" fill="#57606a"><text x="208" y="246">Fa0/10 (routed) · cost 10</text><text x="568" y="246">Fa0/10 (routed) · cost 10</text></g>
+  <g font-size="11" font-weight="bold" fill="#1f2328"><text x="208" y="262">10.1.1.1/24</text><text x="568" y="262">10.2.2.1/24</text></g>
+  <g fill="#f6f8fa" stroke="#57606a" stroke-width="2"><rect x="170" y="300" width="60" height="40" rx="4"/><rect x="530" y="300" width="60" height="40" rx="4"/></g>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328"><text x="200" y="325">PC1</text><text x="560" y="325">PC2</text></g>
+  <g text-anchor="middle" font-size="11" fill="#1f2328"><text x="200" y="358">10.1.1.10/24 · gw .1</text><text x="560" y="358">10.2.2.10/24 · gw .1</text></g>
+
+  <!-- results box -->
+  <rect x="70" y="384" width="620" height="128" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="86" y="406" font-size="12" font-weight="bold" fill="#1f2328">DSW2 route to 10.1.1.0/24 (observed)</text>
+  <g font-size="11" fill="#1f2328">
+    <text x="86" y="428" font-weight="bold" fill="#8250df">Both Po1 members up</text>
+    <text x="250" y="428">Po1 5 + Fa0/10 10 = 15 &lt; Fa0/3 10 + 10 = 20</text>
+    <text x="560" y="428" font-family="monospace">[110/15] via Po1</text>
+    <text x="86" y="452" font-weight="bold" fill="#bc4c00">One member shut</text>
+    <text x="250" y="452">Po1 → 100 Mbps, cost 10: both paths = 20</text>
+    <text x="560" y="452" font-family="monospace">[110/20] via Fa0/3</text>
+    <text x="560" y="466" font-family="monospace">[110/20] via Po1</text>
+    <text x="86" y="490" font-weight="bold" fill="#1a7f37">Member restored</text>
+    <text x="250" y="490">Po1 back to cost 5</text>
+    <text x="560" y="490" font-family="monospace">[110/15] via Po1</text>
+  </g>
+</svg>
