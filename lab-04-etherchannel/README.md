@@ -147,7 +147,7 @@ SW1>enable
 SW1#conf t
 ! Create VLAN 10 (and enter VLAN config mode)
 SW1(config)#vlan 10
-! Name the VLAN "users"
+! Name the VLAN "USERS"
 SW1(config-vlan)#name USERS
 SW1(config-vlan)#exit
 ! Select f0/1-2 and configure them together
@@ -177,7 +177,7 @@ SW2>enable
 SW2#conf t
 ! Create VLAN 10 (and enter VLAN config mode)
 SW2(config)#vlan 10
-! Name the VLAN "users"
+! Name the VLAN "USERS"
 SW2(config-vlan)#name USERS
 SW2(config-vlan)#exit
 ! Select f0/1-2 and configure them together
@@ -216,7 +216,7 @@ SW3>enable
 SW3#conf t
 ! Create VLAN 10 (and enter VLAN config mode)
 SW3(config)#vlan 10
-! Name the VLAN "users"
+! Name the VLAN "USERS"
 SW3(config-vlan)#name USERS
 SW3(config-vlan)#exit
 ! Select f0/1-2 and configure them together

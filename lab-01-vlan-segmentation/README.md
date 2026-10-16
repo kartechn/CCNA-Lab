@@ -125,7 +125,7 @@ SW1>enable
 SW1#conf t
 ! Create VLAN 10 (and enter VLAN config mode)
 SW1(config)#vlan 10
-! Name the VLAN "buss"
+! Name the VLAN "Buss"
 SW1(config-vlan)#name Buss
 ! Create VLAN 20 (and enter VLAN config mode)
 SW1(config-vlan)#vlan 20
