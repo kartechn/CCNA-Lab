@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="560" viewBox="0 0 760 560" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="560" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">EtherChannel Mode Matrix</text>
+  <text x="380" y="52" text-anchor="middle" font-size="12" fill="#57606a">Hub SW1 vs four spokes · observed in SW1 show etherchannel summary</text>
+
+  <!-- SW1 hub -->
+  <rect x="290" y="90" width="180" height="48" rx="6" fill="#1a7f37"/>
+  <text x="380" y="120" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">SW1 (hub)</text>
+  <text x="380" y="80" text-anchor="middle" font-size="11" fill="#57606a">WS-C2960-24TT-L · Fa0/1-8 trunks</text>
+
+  <!-- links: Po1 OK -->
+  <line x1="300" y1="138" x2="104" y2="318" stroke="#1a7f37" stroke-width="3"/>
+  <line x1="312" y1="138" x2="116" y2="318" stroke="#1a7f37" stroke-width="3"/>
+  <!-- Po2 stand-alone (dashed grey) -->
+  <line x1="345" y1="138" x2="280" y2="318" stroke="#9a6700" stroke-width="3" stroke-dasharray="7 5"/>
+  <line x1="357" y1="138" x2="292" y2="318" stroke="#9a6700" stroke-width="3" stroke-dasharray="7 5"/>
+  <!-- Po3 err-disabled (red) -->
+  <line x1="403" y1="138" x2="468" y2="318" stroke="#cf222e" stroke-width="3" stroke-dasharray="3 5"/>
+  <line x1="415" y1="138" x2="480" y2="318" stroke="#cf222e" stroke-width="3" stroke-dasharray="3 5"/>
+  <!-- Po4 suspended -->
+  <line x1="448" y1="138" x2="644" y2="318" stroke="#cf222e" stroke-width="3" stroke-dasharray="7 5"/>
+  <line x1="460" y1="138" x2="656" y2="318" stroke="#cf222e" stroke-width="3" stroke-dasharray="7 5"/>
+
+  <!-- status markers on links -->
+  <g font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    <circle cx="208" cy="228" r="12" fill="#1a7f37"/><text x="208" y="232">P</text>
+    <circle cx="318" cy="228" r="12" fill="#9a6700"/><text x="318" y="232">I</text>
+    <circle cx="442" cy="228" r="12" fill="#cf222e"/><text x="442" y="232">D</text>
+    <circle cx="552" cy="228" r="12" fill="#cf222e"/><text x="552" y="232">s</text>
+  </g>
+
+  <!-- spokes -->
+  <g font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    <rect x="50" y="318" width="120" height="44" rx="6" fill="#57606a"/><text x="110" y="346">SW2</text>
+    <rect x="226" y="318" width="120" height="44" rx="6" fill="#57606a"/><text x="286" y="346">SW3</text>
+    <rect x="414" y="318" width="120" height="44" rx="6" fill="#57606a"/><text x="474" y="346">SW4</text>
+    <rect x="590" y="318" width="120" height="44" rx="6" fill="#57606a"/><text x="650" y="346">SW5</text>
+  </g>
+
+  <!-- per-spoke captions -->
+  <g text-anchor="middle" font-size="12" font-weight="bold">
+    <text x="110" y="386" fill="#1a7f37">Po1 · Fa0/1-2</text>
+    <text x="286" y="386" fill="#9a6700">Po2 · Fa0/3-4</text>
+    <text x="474" y="386" fill="#cf222e">Po3 · Fa0/5-6</text>
+    <text x="650" y="386" fill="#cf222e">Po4 · Fa0/7-8</text>
+  </g>
+  <g text-anchor="middle" font-size="11" fill="#1f2328">
+    <text x="110" y="404">LACP active</text><text x="110" y="418">↔ LACP passive</text>
+    <text x="286" y="404">PAgP auto</text><text x="286" y="418">↔ PAgP auto</text>
+    <text x="474" y="404">on (static)</text><text x="474" y="418">↔ no channel-group</text>
+    <text x="650" y="404">LACP active</text><text x="650" y="418">↔ PAgP desirable</text>
+  </g>
+  <g text-anchor="middle" font-size="11" font-weight="bold">
+    <text x="110" y="440" fill="#1a7f37">Po1(SU) · P P</text>
+    <text x="286" y="440" fill="#9a6700">Po2(SD) · I I</text>
+    <text x="474" y="440" fill="#cf222e">Po3(SD) · D D</text>
+    <text x="650" y="440" fill="#cf222e">Po4(SD) · s s</text>
+  </g>
+  <g text-anchor="middle" font-size="11" fill="#57606a">
+    <text x="110" y="456">bundled</text>
+    <text x="286" y="456">stand-alone, no bundle</text>
+    <text x="474" y="456">err-disabled</text>
+    <text x="474" y="470">(EtherChannel guard)</text>
+    <text x="650" y="456">suspended, no bundle</text>
+  </g>
+
+  <text x="380" y="520" text-anchor="middle" font-size="11" fill="#57606a">P = bundled · I = stand-alone · D = down · s = suspended · only one of the four pairings forms a bundle</text>
+</svg>
