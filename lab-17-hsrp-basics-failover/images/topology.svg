@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="580" viewBox="0 0 760 580" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="580" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">HSRP Basics and Failover</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">One virtual gateway per VLAN · DSW1 Active (110) · DSW2 Standby (100) · both preempt</text>
+
+  <!-- trunks -->
+  <line x1="260" y1="134" x2="500" y2="134" stroke="#8250df" stroke-width="4"/>
+  <text x="380" y="126" text-anchor="middle" font-size="11" fill="#8250df">Fa0/2 ↔ Fa0/2 · trunk</text>
+  <line x1="200" y1="158" x2="350" y2="318" stroke="#8250df" stroke-width="4"/>
+  <line x1="560" y1="158" x2="410" y2="318" stroke="#8250df" stroke-width="4" stroke-dasharray="8 5"/>
+  <text x="250" y="246" text-anchor="end" font-size="11" fill="#8250df">DSW1 Fa0/1 ↔ SW1 Fa0/1</text>
+  <text x="510" y="246" font-size="11" fill="#8250df">DSW2 Fa0/1 ↔ SW1 Fa0/2</text>
+  <text x="510" y="262" font-size="11" fill="#57606a">expected STP Altn BLK at SW1 end</text>
+
+  <!-- VIP box -->
+  <rect x="290" y="168" width="180" height="58" rx="8" fill="#fff8c5" stroke="#d4a72c" stroke-dasharray="5 3"/>
+  <text x="380" y="188" text-anchor="middle" font-size="12" font-weight="bold" fill="#7d4e00">Virtual gateways</text>
+  <text x="380" y="204" text-anchor="middle" font-size="11" fill="#1f2328">VLAN 10 · 192.168.10.1 (grp 10)</text>
+  <text x="380" y="218" text-anchor="middle" font-size="11" fill="#1f2328">VLAN 20 · 192.168.20.1 (grp 20)</text>
+
+  <!-- cores -->
+  <rect x="140" y="110" width="120" height="48" rx="6" fill="#1a7f37"/>
+  <text x="200" y="140" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">DSW1</text>
+  <rect x="500" y="110" width="120" height="48" rx="6" fill="#0969da"/>
+  <text x="560" y="140" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">DSW2</text>
+  <g font-size="11" text-anchor="middle">
+    <text x="200" y="74" font-weight="bold" fill="#1a7f37">HSRP Active · priority 110 · STP root</text>
+    <text x="200" y="88" fill="#57606a">.10.2 / .20.2 · WS-C3560-24TS</text>
+    <text x="200" y="102" fill="#57606a">STP priority 24576 (VLAN 10, 20)</text>
+    <text x="560" y="74" font-weight="bold" fill="#0969da">HSRP Standby · priority 100 (default)</text>
+    <text x="560" y="88" fill="#57606a">.10.3 / .20.3 · WS-C3560-24TS</text>
+    <text x="560" y="102" fill="#57606a">STP priority 28672 (root secondary)</text>
+  </g>
+
+  <!-- SW1 -->
+  <rect x="320" y="318" width="120" height="46" rx="6" fill="#57606a"/>
+  <text x="380" y="347" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">SW1</text>
+  <text x="456" y="346" font-size="11" fill="#57606a">WS-C2960-24TT-L</text>
+
+  <!-- hosts -->
+  <g stroke="#57606a" stroke-width="2"><line x1="345" y1="364" x2="230" y2="420"/><line x1="415" y1="364" x2="530" y2="420"/></g>
+  <g font-size="11" fill="#57606a"><text x="276" y="390" text-anchor="end">Fa0/10 · VLAN 10</text><text x="484" y="390">Fa0/20 · VLAN 20</text></g>
+  <rect x="200" y="420" width="60" height="40" rx="4" fill="#f6f8fa" stroke="#57606a" stroke-width="2"/>
+  <rect x="496" y="414" width="68" height="52" rx="4" fill="#f6f8fa" stroke="#57606a" stroke-width="2"/>
+  <line x1="504" y1="430" x2="556" y2="430" stroke="#57606a"/><line x1="504" y1="442" x2="556" y2="442" stroke="#57606a"/>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328"><text x="230" y="445">PC1</text><text x="530" y="458">SRV1</text></g>
+  <g text-anchor="middle" font-size="11" fill="#1f2328"><text x="230" y="482">192.168.10.10/24</text><text x="530" y="484">192.168.20.100/24</text></g>
+  <g text-anchor="middle" font-size="11" fill="#57606a"><text x="230" y="497">gw 192.168.10.1 (VIP)</text><text x="530" y="499">gw 192.168.20.1 (VIP)</text></g>
+
+  <!-- timeline -->
+  <text x="380" y="530" text-anchor="middle" font-size="11" font-weight="bold" fill="#1f2328">Observed: DSW1 off 22:08:52 → DSW2 Active 22:08:59 (~7 s) · DSW1 on 22:09:52 → preempts back 22:09:53</text>
+  <text x="380" y="548" text-anchor="middle" font-size="11" fill="#57606a">PC1 → SRV1 ping 4/4 twice, TTL 127</text>
+</svg>
