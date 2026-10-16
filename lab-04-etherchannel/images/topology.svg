@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="560" viewBox="0 0 760 560" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="560" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">EtherChannel Lab</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">Three port-channels, three negotiation modes: LACP, PAgP and static (on)</text>
+
+  <!-- Po1 SW1-SW2 LACP -->
+  <line x1="352" y1="132" x2="192" y2="290" stroke="#8250df" stroke-width="3"/>
+  <line x1="362" y1="140" x2="202" y2="298" stroke="#8250df" stroke-width="3"/>
+  <ellipse cx="277" cy="215" rx="9" ry="16" transform="rotate(45 277 215)" fill="none" stroke="#8250df" stroke-width="2"/>
+  <text x="250" y="190" text-anchor="end" font-size="12" font-weight="bold" fill="#8250df">Po1 · LACP</text>
+  <text x="250" y="206" text-anchor="end" font-size="11" fill="#8250df">SW1 Fa0/1-2 ↔ SW2 Fa0/1-2</text>
+
+  <!-- Po2 SW1-SW3 PAgP -->
+  <line x1="398" y1="140" x2="558" y2="298" stroke="#bc4c00" stroke-width="3"/>
+  <line x1="408" y1="132" x2="568" y2="290" stroke="#bc4c00" stroke-width="3"/>
+  <ellipse cx="483" cy="215" rx="9" ry="16" transform="rotate(-45 483 215)" fill="none" stroke="#bc4c00" stroke-width="2"/>
+  <text x="510" y="190" font-size="12" font-weight="bold" fill="#bc4c00">Po2 · PAgP</text>
+  <text x="510" y="206" font-size="11" fill="#bc4c00">SW1 Fa0/3-4 ↔ SW3 Fa0/1-2</text>
+
+  <!-- Po3 SW2-SW3 static -->
+  <line x1="260" y1="304" x2="500" y2="304" stroke="#0969da" stroke-width="3"/>
+  <line x1="260" y1="316" x2="500" y2="316" stroke="#0969da" stroke-width="3"/>
+  <ellipse cx="380" cy="310" rx="9" ry="16" fill="none" stroke="#0969da" stroke-width="2"/>
+  <text x="380" y="292" text-anchor="middle" font-size="12" font-weight="bold" fill="#0969da">Po3 · static (mode on)</text>
+  <text x="380" y="342" text-anchor="middle" font-size="11" fill="#0969da">SW2 Fa0/3-4 ↔ SW3 Fa0/3-4</text>
+
+  <!-- switches -->
+  <g font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    <rect x="320" y="92" width="120" height="44" rx="6" fill="#1a7f37"/><text x="380" y="120">SW1</text>
+    <rect x="140" y="288" width="120" height="44" rx="6" fill="#57606a"/><text x="200" y="316">SW2</text>
+    <rect x="500" y="288" width="120" height="44" rx="6" fill="#57606a"/><text x="560" y="316">SW3</text>
+  </g>
+  <text x="380" y="82" text-anchor="middle" font-size="11" fill="#57606a">WS-C2960-24TT-L</text>
+
+  <!-- PC links -->
+  <g stroke="#57606a" stroke-width="2">
+    <line x1="200" y1="332" x2="200" y2="420"/><line x1="560" y1="332" x2="560" y2="420"/>
+  </g>
+  <g font-size="11" fill="#57606a">
+    <text x="208" y="380">Fa0/10</text><text x="568" y="380">Fa0/10</text>
+  </g>
+
+  <!-- PCs -->
+  <g fill="#f6f8fa" stroke="#57606a" stroke-width="2">
+    <rect x="170" y="420" width="60" height="40" rx="4"/><rect x="530" y="420" width="60" height="40" rx="4"/>
+  </g>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328">
+    <text x="200" y="445">PC1</text><text x="560" y="445">PC2</text>
+  </g>
+  <g text-anchor="middle" font-size="11" fill="#1f2328">
+    <text x="200" y="478">192.168.10.1/24</text><text x="560" y="478">192.168.10.2/24</text>
+  </g>
+  <g text-anchor="middle" font-size="11" fill="#57606a">
+    <text x="200" y="493">VLAN 10</text><text x="560" y="493">VLAN 10</text>
+  </g>
+
+  <text x="380" y="535" text-anchor="middle" font-size="11" fill="#57606a">Each bundle = 2 × FastEthernet · the triangle is a loop, so STP blocks one port-channel</text>
+</svg>
