@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="660" viewBox="0 0 760 660" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="660" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">HSRP Dual-Active Troubleshooting</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">Two faults on DSW2 → both cores Active for VLAN 10 and VLAN 20 · fixed: one Active + one Standby per VLAN</text>
+
+  <!-- R1 ISP -->
+  <rect x="320" y="74" width="120" height="46" rx="23" fill="#8250df"/>
+  <text x="380" y="103" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">R1 (ISP)</text>
+  <text x="456" y="92" font-size="11" font-weight="bold" fill="#1f2328">Loopback0 8.8.8.8/32</text>
+  <text x="456" y="106" font-size="11" fill="#57606a">unchanged from Lab 18</text>
+
+  <!-- uplinks -->
+  <line x1="330" y1="114" x2="210" y2="186" stroke="#1f2328" stroke-width="4"/>
+  <line x1="430" y1="114" x2="550" y2="186" stroke="#1f2328" stroke-width="4"/>
+  <g font-size="11">
+    <text x="252" y="136" text-anchor="end" font-weight="bold" fill="#1f2328">10.1.1.0/30</text>
+    <text x="252" y="150" text-anchor="end" fill="#57606a">Gi0/0 ↔ DSW1 Gi0/1</text>
+    <text x="508" y="136" font-weight="bold" fill="#1f2328">10.2.2.0/30</text>
+    <text x="508" y="150" fill="#57606a">Gi0/1 ↔ DSW2 Gi0/1</text>
+  </g>
+
+  <!-- cores -->
+  <rect x="140" y="186" width="120" height="50" rx="6" fill="#1a7f37"/>
+  <text x="200" y="217" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">DSW1</text>
+  <rect x="500" y="186" width="120" height="50" rx="6" fill="#0969da"/>
+  <text x="560" y="217" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">DSW2</text>
+  <line x1="260" y1="211" x2="500" y2="211" stroke="#8250df" stroke-width="4"/>
+  <text x="380" y="204" text-anchor="middle" font-size="11" fill="#8250df">Fa0/2 ↔ Fa0/2 · trunk</text>
+
+  <!-- fault boxes -->
+  <rect x="40" y="248" width="320" height="96" rx="6" fill="#fff8f8" stroke="#cf222e"/>
+  <g font-size="11">
+    <text x="52" y="266" font-weight="bold" fill="#cf222e">Broken: show standby brief</text>
+    <text x="52" y="282" fill="#1f2328">Vl10  Grp 10  110  Active · Standby unknown</text>
+    <text x="52" y="296" fill="#1f2328">Vl20  Grp 20  100  Active · Standby unknown</text>
+    <text x="52" y="314" fill="#cf222e">%HSRP-4-BADAUTH from 192.168.10.3, group 10</text>
+    <text x="52" y="330" fill="#57606a">VLAN 10: no authentication configured</text>
+  </g>
+  <rect x="400" y="248" width="320" height="96" rx="6" fill="#fff8f8" stroke="#cf222e"/>
+  <g font-size="11">
+    <text x="412" y="266" font-weight="bold" fill="#cf222e">Broken: show standby brief</text>
+    <text x="412" y="282" fill="#1f2328">Vl10  Grp 10  100  Active · Standby unknown</text>
+    <text x="412" y="296" font-weight="bold" fill="#cf222e">Vl20  Grp 21  110  Active · Standby unknown</text>
+    <text x="412" y="314" fill="#cf222e">Fault 1: standby 10 authentication md5 …</text>
+    <text x="412" y="330" fill="#cf222e">Fault 2: VLAN 20 HSRP moved to group 21</text>
+  </g>
+
+  <!-- downlinks -->
+  <line x1="200" y1="344" x2="345" y2="418" stroke="#8250df" stroke-width="4"/>
+  <line x1="560" y1="344" x2="415" y2="418" stroke="#8250df" stroke-width="4"/>
+  <text x="262" y="396" text-anchor="end" font-size="11" fill="#8250df">DSW1 Fa0/1 ↔ SW1 Fa0/1</text>
+  <text x="498" y="396" font-size="11" fill="#8250df">DSW2 Fa0/1 ↔ SW1 Fa0/2</text>
+
+  <rect x="320" y="418" width="120" height="44" rx="6" fill="#57606a"/>
+  <text x="380" y="446" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">SW1</text>
+
+  <!-- hosts -->
+  <g stroke="#57606a" stroke-width="2"><line x1="345" y1="462" x2="240" y2="510"/><line x1="415" y1="462" x2="520" y2="510"/></g>
+  <rect x="210" y="510" width="60" height="38" rx="4" fill="#f6f8fa" stroke="#57606a" stroke-width="2"/>
+  <rect x="486" y="506" width="68" height="46" rx="4" fill="#f6f8fa" stroke="#57606a" stroke-width="2"/>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328"><text x="240" y="534">PC1</text><text x="520" y="534">SRV1</text></g>
+  <g text-anchor="middle" font-size="11" fill="#1f2328"><text x="240" y="566">VLAN 10 · gw 192.168.10.1</text><text x="520" y="570">VLAN 20 · gw 192.168.20.1</text></g>
+
+  <!-- result -->
+  <rect x="40" y="590" width="680" height="54" rx="6" fill="#f6fbf7" stroke="#1a7f37"/>
+  <text x="380" y="610" text-anchor="middle" font-size="11" font-weight="bold" fill="#1a7f37">Fix: MD5 key CISCO123 on BOTH cores (VLAN 10) · group 20 on BOTH cores (VLAN 20)</text>
+  <text x="380" y="628" text-anchor="middle" font-size="11" fill="#57606a">Observed after fix: VLAN 10 Active DSW1 / Standby DSW2 · VLAN 20 Active DSW2 / Standby DSW1</text>
+</svg>
