@@ -1,0 +1,133 @@
+!
+! Last configuration change at 18:10:59 UTC Tue Oct 20 2026
+!
+version 15.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname BR1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 10.0.3.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1.30
+ description BRANCH-STAFF
+ encapsulation dot1Q 30
+ ip address 172.16.30.1 255.255.255.0
+ ip helper-address 10.0.3.1
+!
+interface GigabitEthernet0/1.40
+ description BRANCH-GUEST
+ encapsulation dot1Q 40
+ ip address 172.16.40.1 255.255.255.0
+ ip helper-address 10.0.3.1
+ ip access-group GUEST-ISOLATION in
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router ospf 1
+ router-id 4.4.4.4
+ passive-interface GigabitEthernet0/1.30
+ passive-interface GigabitEthernet0/1.40
+ network 10.0.3.0 0.0.0.3 area 1
+ network 172.16.30.0 0.0.0.255 area 1
+ network 172.16.40.0 0.0.0.255 area 1
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+ip access-list extended GUEST-ISOLATION
+ deny   ip 172.16.40.0 0.0.0.255 192.168.0.0 0.0.255.255
+ deny   ip 172.16.40.0 0.0.0.255 172.16.30.0 0.0.0.255
+ permit ip any any
+!
+ipv6 ioam timestamp
+!
+!
+!
+control-plane
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+no scheduler allocate
+!
+end
