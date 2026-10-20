@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="400" viewBox="0 0 760 400" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="400" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">Router Between Two Networks</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">One router, two subnets, each PC uses its own side of R1 as default gateway</text>
+
+  <!-- subnet shading -->
+  <rect x="30" y="80" width="300" height="250" rx="10" fill="#ddf4ff" stroke="#54aeff" stroke-dasharray="6 4"/>
+  <text x="46" y="100" font-size="12" font-weight="bold" fill="#0969da">Network 1 · 192.168.1.0/24</text>
+  <rect x="430" y="80" width="300" height="250" rx="10" fill="#dafbe1" stroke="#4ac26b" stroke-dasharray="6 4"/>
+  <text x="714" y="100" text-anchor="end" font-size="12" font-weight="bold" fill="#1a7f37">Network 2 · 192.168.2.0/24</text>
+
+  <!-- R1 -->
+  <rect x="320" y="180" width="120" height="50" rx="25" fill="#8250df"/>
+  <text x="380" y="211" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">R1</text>
+  <text x="380" y="252" text-anchor="middle" font-size="11" fill="#57606a">ISR4331</text>
+
+  <!-- links -->
+  <line x1="150" y1="205" x2="320" y2="205" stroke="#1f2328" stroke-width="3"/>
+  <line x1="440" y1="205" x2="610" y2="205" stroke="#1f2328" stroke-width="3"/>
+  <g font-size="11">
+    <text x="312" y="196" text-anchor="end" font-weight="bold" fill="#0969da">Gi0/0 192.168.1.1</text>
+    <text x="448" y="196" font-weight="bold" fill="#1a7f37">Gi0/1 192.168.2.1</text>
+    <text x="160" y="196" fill="#57606a">Fa0</text>
+    <text x="600" y="196" text-anchor="end" fill="#57606a">Fa0</text>
+  </g>
+
+  <!-- PCs -->
+  <g fill="#f6f8fa" stroke="#57606a" stroke-width="2"><rect x="90" y="185" width="60" height="40" rx="4"/><rect x="610" y="185" width="60" height="40" rx="4"/></g>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328"><text x="120" y="210">PC1</text><text x="640" y="210">PC2</text></g>
+  <g text-anchor="middle" font-size="11" fill="#1f2328"><text x="120" y="246">192.168.1.10/24</text><text x="640" y="246">192.168.2.10/24</text></g>
+  <g text-anchor="middle" font-size="11" fill="#57606a"><text x="120" y="262">gw 192.168.1.1</text><text x="640" y="262">gw 192.168.2.1</text></g>
+
+  <text x="380" y="366" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2328">Observed: PC2 → ping 192.168.1.10 · 4/4 replies · TTL 127 (128 − 1 router hop)</text>
+</svg>
