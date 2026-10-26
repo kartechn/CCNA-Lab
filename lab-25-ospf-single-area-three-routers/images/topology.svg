@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="540" viewBox="0 0 760 540" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="540" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">OSPF Single-Area: Three Routers</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">Router triangle in area 0, LAN interfaces passive, every link Gigabit (cost 1)</text>
+
+  <!-- area 0 shading -->
+  <rect x="150" y="80" width="460" height="330" rx="14" fill="#fff8c5" stroke="#d4a72c" stroke-dasharray="6 4"/>
+  <text x="166" y="100" font-size="12" font-weight="bold" fill="#9a6700">OSPF area 0</text>
+
+  <!-- transit links -->
+  <g stroke="#bc4c00" stroke-width="3">
+    <line x1="270" y1="150" x2="490" y2="150"/>
+    <line x1="230" y1="175" x2="350" y2="335"/>
+    <line x1="530" y1="175" x2="410" y2="335"/>
+  </g>
+  <g font-size="12" font-weight="bold" fill="#bc4c00" text-anchor="middle">
+    <text x="380" y="140">10.0.12.0/30</text>
+    <text x="262" y="262" text-anchor="end">10.0.13.0/30</text>
+    <text x="498" y="262" text-anchor="start">10.0.23.0/30</text>
+  </g>
+  <g font-size="11" fill="#bc4c00">
+    <text x="276" y="170">Gi0/1 .1</text>
+    <text x="484" y="170" text-anchor="end">Gi0/1 .2</text>
+    <text x="252" y="196">Gi0/2 .1</text>
+    <text x="508" y="196" text-anchor="end">Gi0/2 .1</text>
+    <text x="336" y="318" text-anchor="end">Gi0/1 .2</text>
+    <text x="424" y="318">Gi0/2 .2</text>
+  </g>
+
+  <!-- DR/BDR (observed on R3's links) -->
+  <g font-size="10" font-weight="bold">
+    <text x="262" y="278" fill="#1a7f37" text-anchor="end">R3 DR · R1 BDR</text>
+    <text x="498" y="278" fill="#1a7f37">R3 DR · R2 BDR</text>
+  </g>
+
+  <!-- routers -->
+  <g>
+    <rect x="150" y="125" width="120" height="50" rx="25" fill="#8250df"/>
+    <rect x="490" y="125" width="120" height="50" rx="25" fill="#8250df"/>
+    <rect x="320" y="335" width="120" height="50" rx="25" fill="#8250df"/>
+  </g>
+  <g font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    <text x="210" y="156">R1</text><text x="550" y="156">R2</text><text x="380" y="366">R3</text>
+  </g>
+  <g font-size="10" fill="#57606a" text-anchor="middle">
+    <text x="210" y="118">RID 1.1.1.1</text><text x="550" y="118">RID 2.2.2.2</text><text x="448" y="364" text-anchor="start">RID 3.3.3.3</text>
+  </g>
+
+  <!-- LAN links -->
+  <g stroke="#1f2328" stroke-width="3">
+    <line x1="150" y1="150" x2="100" y2="150"/>
+    <line x1="610" y1="150" x2="660" y2="150"/>
+    <line x1="380" y1="385" x2="380" y2="440"/>
+  </g>
+
+  <!-- PCs -->
+  <g fill="#f6f8fa" stroke="#57606a" stroke-width="2">
+    <rect x="40" y="132" width="60" height="36" rx="4"/>
+    <rect x="660" y="132" width="60" height="36" rx="4"/>
+    <rect x="350" y="440" width="60" height="36" rx="4"/>
+  </g>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328">
+    <text x="70" y="155">PC1</text><text x="690" y="155">PC2</text><text x="380" y="463">PC3</text>
+  </g>
+  <g text-anchor="middle" font-size="11">
+    <text x="70" y="190" font-weight="bold" fill="#0969da">192.168.1.0/24</text>
+    <text x="70" y="205" fill="#1f2328">PC1 .10 · gw .1</text>
+    <text x="70" y="220" fill="#57606a">R1 Gi0/0 (passive)</text>
+    <text x="690" y="190" font-weight="bold" fill="#0969da">192.168.2.0/24</text>
+    <text x="690" y="205" fill="#1f2328">PC2 .10 · gw .1</text>
+    <text x="690" y="220" fill="#57606a">R2 Gi0/0 (passive)</text>
+  </g>
+  <g font-size="11">
+    <text x="420" y="452" font-weight="bold" fill="#0969da">192.168.3.0/24</text>
+    <text x="420" y="467" fill="#1f2328">PC3 .10 · gw .1</text>
+    <text x="420" y="482" fill="#57606a">R3 Gi0/0 (passive)</text>
+  </g>
+
+  <text x="380" y="520" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2328">Observed: PC3 → PC1 and PC3 → PC2 · 4/4 replies each · TTL 126 (2 router hops)</text>
+</svg>
