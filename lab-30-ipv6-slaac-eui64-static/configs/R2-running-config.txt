@@ -1,0 +1,123 @@
+!
+! Last configuration change at 17:57:09 UTC Wed Oct 28 2026
+!
+version 15.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+ipv6 dhcp pool LAN2-STATELESS
+ dns-server 2001:DB8:2::254
+ domain-name lab.local
+!
+ipv6 unicast-routing
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ description LAN2 - SLAAC + Stateless DHCPv6
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:DB8:2::1/64
+ ipv6 nd other-config-flag
+ ipv6 dhcp server LAN2-STATELESS
+!
+interface GigabitEthernet0/1
+ description Link to R1
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:DB8:12::2/64
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+ipv6 route 2001:DB8:1::/64 2001:DB8:12::1
+!
+ipv6 ioam timestamp
+!
+!
+!
+control-plane
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+no scheduler allocate
+!
+end

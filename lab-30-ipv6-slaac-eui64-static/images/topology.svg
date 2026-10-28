@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="470" viewBox="0 0 760 470" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="470" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="380" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f2328">IPv6 SLAAC and EUI-64 with Static Routing</text>
+  <text x="380" y="54" text-anchor="middle" font-size="12" fill="#57606a">Hosts build their own addresses from the router's prefix and their MAC · one static route each way</text>
+
+  <!-- zones -->
+  <rect x="30" y="80" width="250" height="300" rx="10" fill="#ddf4ff" stroke="#54aeff" stroke-dasharray="6 4"/>
+  <text x="46" y="100" font-size="12" font-weight="bold" fill="#0969da">LAN 1 · 2001:DB8:1::/64</text>
+  <text x="46" y="116" font-size="11" fill="#0969da">SLAAC only</text>
+  <rect x="300" y="80" width="200" height="300" rx="10" fill="#fff1e5" stroke="#fb8f44" stroke-dasharray="6 4"/>
+  <text x="400" y="100" text-anchor="middle" font-size="12" font-weight="bold" fill="#bc4c00">Transit · 2001:DB8:12::/64</text>
+  <rect x="520" y="80" width="210" height="300" rx="10" fill="#dafbe1" stroke="#4ac26b" stroke-dasharray="6 4"/>
+  <text x="714" y="100" text-anchor="end" font-size="12" font-weight="bold" fill="#1a7f37">LAN 2 · 2001:DB8:2::/64</text>
+  <text x="714" y="116" text-anchor="end" font-size="11" fill="#1a7f37">SLAAC + stateless DHCPv6</text>
+
+  <!-- links -->
+  <g stroke="#1f2328" stroke-width="3">
+    <line x1="205" y1="180" x2="205" y2="248"/>
+    <line x1="215" y1="270" x2="320" y2="270"/>
+    <line x1="590" y1="270" x2="640" y2="270"/>
+  </g>
+  <line x1="380" y1="270" x2="470" y2="270" stroke="#bc4c00" stroke-width="3"/>
+
+  <!-- devices -->
+  <rect x="95" y="248" width="120" height="44" rx="6" fill="#57606a"/>
+  <text x="155" y="276" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">SW1</text>
+  <rect x="320" y="245" width="60" height="50" rx="25" fill="#8250df"/>
+  <text x="350" y="276" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">R1</text>
+  <rect x="470" y="245" width="60" height="50" rx="25" fill="#8250df"/>
+  <text x="500" y="276" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">R2</text>
+  <line x1="530" y1="270" x2="590" y2="270" stroke="#1f2328" stroke-width="3"/>
+  <g fill="#f6f8fa" stroke="#57606a" stroke-width="2">
+    <rect x="175" y="144" width="60" height="36" rx="4"/>
+    <rect x="640" y="252" width="60" height="36" rx="4"/>
+  </g>
+  <g text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2328">
+    <text x="205" y="167">PC1</text><text x="670" y="275">PC2</text>
+  </g>
+
+  <!-- router interface labels -->
+  <g font-size="10" fill="#57606a">
+    <text x="312" y="226" text-anchor="end">Gi0/0 2001:DB8:1::1</text>
+    <text x="312" y="239" text-anchor="end">link-local FE80::1</text>
+    <text x="388" y="300">Gi0/1 ::1</text>
+    <text x="462" y="244" text-anchor="end">Gi0/1 ::2</text>
+    <text x="538" y="226">Gi0/0 2001:DB8:2::1</text>
+    <text x="538" y="239">link-local FE80::2</text>
+  </g>
+  <g font-size="10" fill="#8250df" text-anchor="middle">
+    <text x="400" y="320">R1: 2001:DB8:2::/64</text>
+    <text x="400" y="333">via 2001:DB8:12::2</text>
+    <text x="400" y="352">R2: 2001:DB8:1::/64</text>
+    <text x="400" y="365">via 2001:DB8:12::1</text>
+  </g>
+
+  <!-- host addresses -->
+  <g font-size="10" font-family="Menlo, Consolas, monospace">
+    <text x="40" y="200" fill="#1f2328">MAC 2875.6435.2902</text>
+    <text x="40" y="214" fill="#57606a">LL  fe80::2a75:64ff:fe35:2902</text>
+    <text x="40" y="228" fill="#57606a">gw  fe80::1</text>
+  </g>
+  <g font-size="10" font-family="Menlo, Consolas, monospace" text-anchor="end">
+    <text x="722" y="312" fill="#1f2328">2001:DB8:2::4050:90FF:FE21:8063</text>
+    <text x="722" y="326" fill="#57606a">EUI-64 from MAC 4250.9021.8063</text>
+    <text x="722" y="340" fill="#57606a">gw fe80::2</text>
+  </g>
+
+  <text x="380" y="420" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2328">Observed: PC1 → PC2 ping 4/4 · tracert 2001:DB8:1::1 → 2001:DB8:12::2 → PC2</text>
+  <text x="380" y="440" text-anchor="middle" font-size="11" fill="#57606a">Observed: R2 → 2001:DB8:1::1 ping 5/5 · LAN 1 was first stateful DHCPv6, then reverted to SLAAC</text>
+</svg>
