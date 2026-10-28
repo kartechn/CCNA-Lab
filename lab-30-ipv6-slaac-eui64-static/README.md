@@ -313,7 +313,7 @@ How to read the blocks:
 R1>enable
 ! Enter global configuration mode
 R1#configure terminal
-! Don't treat mistyped commands as hostnames to look up
+! Stop mistyped commands being treated as hostnames to look up
 R1(config)#no ip domain-lookup
 ! Enable IPv6 routing (and sending Router Advertisements)
 R1(config)#ipv6 unicast-routing
@@ -385,7 +385,7 @@ R1#write memory
 R2>enable
 ! Enter global configuration mode
 R2#configure terminal
-! Don't treat mistyped commands as hostnames to look up
+! Stop mistyped commands being treated as hostnames to look up
 R2(config)#no ip domain-lookup
 ! Enable IPv6 routing (and sending Router Advertisements)
 R2(config)#ipv6 unicast-routing
